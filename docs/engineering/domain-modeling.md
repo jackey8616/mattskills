@@ -26,12 +26,34 @@ Reach for it when the *words* are the problem: two people mean different things 
 
 The skill writes into two places, both created lazily — only once there is something to record. Resolved terms go into `CONTEXT.md` at the root (or, in a multi-context repo flagged by a `CONTEXT-MAP.md`, into the per-context `CONTEXT.md`). Decisions go into `docs/adr/`. Nothing needs to exist up front; the first resolved term creates the glossary, the first real trade-off creates the ADR.
 
+It does *not* write behaviour. If a requirement surfaces and the repo has no `openspec/` to hold it, the skill says so rather than spilling it into a glossary entry or an ADR.
+
+## Three layers, three lifetimes
+
+The skill owns two of three document layers, and knowing which is which is most of the discipline:
+
+| Layer | Path | Mutability |
+| --- | --- | --- |
+| Behaviour — what the system does today | `openspec/specs/` | mutable, merged on archive |
+| Decisions — why we chose what we chose | `docs/adr/` | **immutable once accepted** |
+| Language — the glossary | `CONTEXT.md` | living |
+
+`domain-modeling` owns the bottom two. Because the spec layer absorbs the churn of ordinary work, the other two never have to — which is exactly what lets an ADR stay frozen and a glossary stay a glossary. A requirement written into either is the failure mode: it will be read as a decision forever.
+
 ## Glossary vs. ADR
 
 Two artifacts, two different bars:
 
 - **The glossary** (`CONTEXT.md`) captures language. Every time a vague term is made canonical, it's written down inline — not batched — so the shared vocabulary stays current with the conversation. It stays ruthlessly free of implementation detail.
-- **An ADR** captures a decision, and the bar is high: offered only when the choice is **hard to reverse**, **surprising without context**, and **the result of a real trade-off**. Miss any one of the three and there is no ADR. This is what keeps `docs/adr/` a record of consequential forks rather than a diary.
+- **An ADR** captures a decision, and the bar is high: offered only when the choice is **hard to reverse**, **surprising without context**, and **the result of a real trade-off**. Miss any one of the three and there is no ADR — the skill declines silently rather than offering one anyway. This is what keeps `docs/adr/` a record of consequential forks rather than a diary.
+
+An ADR is also **1-3 sentences, as a hard limit**. A decision that won't fit is a signal, not a licence to write more: it's several decisions, or it's a design document, or it's a requirement wearing a decision's clothes.
+
+## Frozen once accepted
+
+Within a session there are exactly two legal writes to `docs/adr/`: **create a new ADR**, or **change an existing one's `Status`**. Never the title, never the body — not to correct it, not to bring it in line with how the code works now.
+
+Reversing a decision means writing a *new* ADR and setting the old one's `Status` to `superseded by ADR-NNNN`. An ADR records what you believed and why, at the time you decided it; retrofitting the reasoning destroys the only thing it was keeping. A superseded ADR that reads as wrong today is doing its job.
 
 The move that makes it click: when you state how something works, the skill cross-references the code and surfaces the contradiction — "your code cancels entire Orders, but you just said partial cancellation is possible — which is right?" The language and the code are forced to agree.
 

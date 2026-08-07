@@ -1,6 +1,6 @@
 ---
 name: to-tickets
-description: Break a plan, spec, or the current conversation into a set of tracer-bullet tickets, each declaring its blocking edges, published to the configured tracker — edges as text in one file per ticket locally, or native blocking links on a real tracker.
+description: Break an approved OpenSpec change into tracer-bullet slices, each declaring its blocking edges, written into that change's tasks.md — escalating to the issue tracker only for work that outlives the change.
 disable-model-invocation: true
 ---
 
@@ -8,13 +8,15 @@ disable-model-invocation: true
 
 Break a plan, spec, or conversation into a set of **tickets** — tracer-bullet vertical slices, each declaring the tickets that **block** it.
 
-The issue tracker and triage label vocabulary should have been provided to you — run `/setup-matt-pocock-skills` if not.
+The default home for them is the active change's `tasks.md`. `tasks.md` is intra-change, session-scope work: everything needed to land *this* change and nothing else. The issue tracker is for work that outlives it.
 
 ## Process
 
 ### 1. Gather context
 
-Work from whatever is already in the conversation context. If the user passes a reference (a spec path, an issue number or URL) as an argument, fetch it and read its full body and comments.
+Work from whatever is already in the conversation context. If the user passes a reference (a change id, a spec path, an issue number or URL) as an argument, fetch it and read it in full.
+
+Identify the **active change** — the folder under `openspec/changes/` this work belongs to. Read its `proposal.md`, its delta specs, and its `design.md` if it has one; the delta specs are what you're slicing against. If there is no active change, the work hasn't been proposed yet — send the user to `/to-spec` first rather than inventing scope here.
 
 ### 2. Explore the codebase (optional)
 
@@ -37,6 +39,8 @@ Break the work into **tracer bullet** tickets.
 
 Give each ticket its **blocking edges** — the other tickets that must complete before it can start. A ticket with no blockers can start immediately.
 
+Every slice must trace back to a requirement in the change's delta specs. A slice you can't trace is scope drift: it belongs back at the propose stage, not in this list.
+
 **Wide refactors are the exception to vertical slicing.** A **wide refactor** is one mechanical change — rename a column, retype a shared symbol — whose **blast radius** fans across the whole codebase, so a single edit breaks thousands of call sites at once and no vertical slice can land green. Don't force it into a tracer bullet; sequence it as **expand–contract**. First expand: add the new form beside the old so nothing breaks. Then migrate the call sites over in batches sized by blast radius (per package, per directory), each batch its own ticket blocked by the expand, keeping CI green batch to batch because the old form still exists. Finally contract: delete the old form once no caller remains, in a ticket blocked by every migrate batch. When even the batches can't stay green alone, keep the sequence but let them share an integration branch that all block a final integrate-and-verify ticket — green is promised only there.
 
 ### 4. Quiz the user
@@ -55,51 +59,33 @@ Ask the user:
 
 Iterate until the user approves the breakdown.
 
-### 5. Publish the tickets to the configured tracker
+### 5. Write the approved tickets into `tasks.md`
 
-Publish the approved tickets. **How** depends on the tracker `/setup-matt-pocock-skills` configured — the tickets are the same either way, only the shape of the blocking edges changes:
+Write them to the active change's `tasks.md`, in dependency order — blockers first — so working the list top to bottom is always legal. Follow the checklist format in the repo's generated OpenSpec agent instructions; where a blocking edge isn't implied by the ordering, name it inline on the ticket.
 
-- **Local files** → write one file per ticket under `.scratch/<feature-slug>/issues/<NN>-<slug>.md`, numbered from `01` in dependency order (blockers first). Each file's "Blocked by" lists the numbers/titles it depends on. Use the per-ticket file template below — one ticket per file, never a single combined file.
-- **A real issue tracker (GitHub, Linear, …)** → publish one issue per ticket in dependency order (blockers first) so each ticket's blocking edges can reference real identifiers. Use the platform's native blocking / sub-issue relationship where it has one; otherwise set each ticket's "Blocked by" to the blocking issues. Apply the `ready-for-agent` triage label unless instructed otherwise — the tickets are agent-grabbable by construction.
+<ticket-template>
 
-Work the **frontier**: any ticket whose blockers are all done. For a purely linear chain that means top to bottom.
+- [ ] **<NN> — <Ticket title>**
+      **What to build:** the end-to-end behaviour this ticket makes work, from the user's perspective — not a layer-by-layer implementation list.
+      **Blocked by:** the numbers/titles of the tickets that gate this one, or omitted entirely when nothing gates it.
+      **Done when:** the acceptance criteria, one line each.
 
-Do NOT close or modify any parent issue.
+</ticket-template>
 
-<local-ticket-template>
+Then validate the change against the OpenSpec toolchain (`openspec validate <change-id> --strict`, or whatever the generated instructions specify).
 
-# <NN> — <Ticket title>
+Work the **frontier**: any ticket whose blockers are all done. For a purely linear chain that means top to bottom. `/implement` builds them one per fresh context window, clearing between each.
 
-**What to build:** the end-to-end behaviour this ticket makes work, from the user's perspective — not a layer-by-layer implementation list.
+### 6. Escalate to the issue tracker — only when the work outlives the change
 
-**Blocked by:** the numbers/titles of the tickets that gate this one, or "None — can start immediately".
+Some work surfaces here that `tasks.md` can't hold, because `tasks.md` archives when the change does. That work goes to the configured issue tracker instead:
 
-**Status:** ready-for-agent
+- Work that **spans sessions beyond this change** — a follow-up nobody will pick up during this build
+- Work that **belongs to another repo**
+- Work that is **out of scope for this change** but shouldn't be lost
 
-- [ ] Acceptance criterion 1
-- [ ] Acceptance criterion 2
+The issue tracker and triage label vocabulary should have been provided to you — run `/setup-matt-pocock-skills` if not. Publish one issue per item, use the platform's native blocking / sub-issue relationship where it has one, and apply the `ready-for-agent` triage label unless instructed otherwise.
 
-</local-ticket-template>
-
-<issue-template>
-
-## Parent
-
-A reference to the parent issue on the tracker (if the source was an existing issue, otherwise omit this section).
-
-## What to build
-
-The end-to-end behaviour this ticket makes work, from the user's perspective — not layer-by-layer implementation.
-
-## Acceptance criteria
-
-- [ ] Criterion 1
-- [ ] Criterion 2
-
-## Blocked by
-
-- A reference to each blocking ticket, or "None — can start immediately".
-
-</issue-template>
+Escalate deliberately, not by default. A ticket that lands this change belongs in `tasks.md`; duplicating it onto the tracker gives the change two sources of truth. Do NOT close or modify any parent issue.
 
 In either form, avoid specific file paths or code snippets — they go stale fast. Exception: if a prototype produced a snippet that encodes a decision more precisely than prose can (state machine, reducer, schema, type shape), inline it and note briefly that it came from a prototype. Trim to the decision-rich parts — not a working demo, just the important bits.
