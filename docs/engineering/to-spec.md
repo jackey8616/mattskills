@@ -37,7 +37,7 @@ Four artifacts, four jobs:
 - **`proposal.md`** — the problem, the solution in your own terms, and what's explicitly out of scope.
 - **`specs/<capability>/spec.md`** — every behaviour the change adds, modifies or removes, as delta requirements with concrete scenarios. Be extensive here; this list *is* the spec.
 - **`design.md`** — implementation decisions, the seams, rejected alternatives. It archives with the change, which is the right home for almost all rationale.
-- **`tasks.md`** — left empty. [to-tickets](https://aihero.dev/skills-to-tickets) fills it.
+- **`tasks.md`** — left empty. [to-tickets](https://aihero.dev/skills-to-tickets) fills it, *after* this proposal merges.
 
 A decision graduates from `design.md` to an ADR under `docs/adr/` only when the trade-off outlives the change — hard to reverse, surprising without context, a real trade-off. Most changes promote nothing. Requirements never become ADRs.
 

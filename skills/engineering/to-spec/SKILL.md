@@ -33,7 +33,7 @@ Then place what you've synthesized:
 | Problem statement, the solution in the user's terms, what's explicitly out of scope | `proposal.md` |
 | Every behaviour the change adds, modifies or removes — as delta requirements with scenarios | `specs/<capability>/spec.md` |
 | Implementation decisions, the seams and testing approach, rejected alternatives, anything else worth carrying forward | `design.md` |
-| The implementation checklist | `tasks.md` — leave it to `/to-tickets`, don't guess at it here |
+| The implementation checklist | `tasks.md` — leave it empty. `/to-tickets` fills it once this proposal has merged |
 
 </what-goes-where>
 
@@ -56,3 +56,5 @@ Never write a requirement into an ADR. Behaviour belongs to the spec layer, and 
 ## After approval
 
 Once the user approves the proposal, its scope is fixed. If new scope surfaces during implementation, it goes back through the propose stage — amend the change, or open a new one — and gets approved again. Don't absorb it silently into an approved change.
+
+The proposal is reviewed and merged on its own, before any implementation work is sliced. `/to-tickets` runs **after** that merge: it breaks the change into tracer-bullet tickets, writes them into `tasks.md`, and publishes one issue each. Slicing an unmerged proposal produces tickets for work that may still move.

@@ -182,8 +182,9 @@ Skills I use daily for code work.
 - **[improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/SKILL.md)** — Scan a codebase for deepening opportunities, present them as a visual HTML report, then grill through whichever one you pick.
 - **[setup-matt-pocock-skills](./skills/engineering/setup-matt-pocock-skills/SKILL.md)** — Configure this repo for the engineering skills (issue tracker, triage labels, domain doc layout). Run once per repo before using the other engineering skills.
 - **[to-spec](./skills/engineering/to-spec/SKILL.md)** — Turn the current conversation into an OpenSpec change proposal under `openspec/changes/`. No interview — just synthesizes what you've already discussed.
-- **[to-tickets](./skills/engineering/to-tickets/SKILL.md)** — Break an approved change into tracer-bullet tickets, each declaring its blocking edges, written into that change's `tasks.md` — escalating to the issue tracker only for work that outlives the change.
+- **[to-tickets](./skills/engineering/to-tickets/SKILL.md)** — Break a merged OpenSpec change into tracer-bullet tickets — written into the change's `tasks.md` and published one-to-one as issues, each declaring its blocking edges.
 - **[implement](./skills/engineering/implement/SKILL.md)** — Build the work described by a spec or set of tickets, driving `/tdd` at pre-agreed seams and closing out with `/code-review` before committing.
+- **[change-review](./skills/engineering/change-review/SKILL.md)** — The gate before archiving an OpenSpec change: every delta requirement built and tested, nothing shipped that wasn't proposed.
 - **[wayfinder](./skills/engineering/wayfinder/SKILL.md)** — Plan a huge chunk of work, more than one agent session can hold, as a shared map of investigation tickets on the issue tracker — resolve them one at a time until the way to the destination is clear.
 
 **Model-invoked**

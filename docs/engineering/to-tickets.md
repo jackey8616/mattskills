@@ -12,30 +12,34 @@ npx skills update to-tickets
 
 ## What it does
 
-`to-tickets` breaks an approved OpenSpec change into a set of **tickets** — each a tracer-bullet vertical slice — written into that change's `tasks.md`, with every ticket declaring the tickets that block it.
+`to-tickets` breaks a **merged** OpenSpec change into a set of **tickets** — each a tracer-bullet vertical slice — written into the change's `tasks.md` and published one-to-one as issues, with every ticket declaring the tickets that block it.
 
-Every ticket is a **tracer bullet** — a thin *vertical* slice that cuts through all integration layers end-to-end (schema, API, UI, tests), never a horizontal slice of one layer. A completed slice is demoable or verifiable on its own, which is what makes each ticket safe to hand to an agent.
+Every ticket is a **tracer bullet** — a thin *vertical* slice that cuts through all integration layers end-to-end (schema, API, UI, tests), never a horizontal slice of one layer. A completed slice is demoable or verifiable on its own, which is what makes each ticket safe to hand to an agent in a session of its own.
 
 ## When to reach for it
 
 You invoke this by typing `/to-tickets` — the agent won't reach for it on its own.
 
-Reach for it once a change has been proposed and approved, and you want it split into buildable slices. Point it at the conversation, or pass a change id and it reads the proposal and delta specs first. If the work hasn't been proposed yet, propose it first — for that, use [to-spec](https://aihero.dev/skills-to-spec).
+Reach for it right after a change proposal merges, when you want it split into buildable slices. Pass a change id and it reads the proposal and delta specs first. If the work hasn't been proposed yet, propose it first — for that, use [to-spec](https://aihero.dev/skills-to-spec).
 
 ## Prerequisites
 
-There must be an **active change** under `openspec/changes/` to write into — `to-tickets` slices against its delta specs and will send you back to [to-spec](https://aihero.dev/skills-to-spec) rather than invent scope of its own.
+The change must be **merged**, not just written. The merged proposal is what fixes the scope; slicing an unmerged one produces tickets for work that may still move under you. `to-tickets` slices against the change's delta specs and will send you back to [to-spec](https://aihero.dev/skills-to-spec) rather than invent scope of its own.
 
-For the escalation path only, it also needs an issue tracker: [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) configures that and its triage label vocabulary. A change whose work all fits inside itself never touches the tracker.
+It publishes issues, so [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) must have configured the tracker and its triage label vocabulary for this repo first. It applies the ready-for-agent label as it publishes.
 
-## Two homes, one rule
+## Two places, one in charge
 
-The rule is lifetime. `tasks.md` archives when the change does; the tracker doesn't.
+Each ticket lands twice, and knowing which copy is authoritative is the whole trick:
 
-- **`tasks.md`** — everything needed to land *this* change, and nothing else. Session-scope work, written blockers-first so top-to-bottom is always legal.
-- **The issue tracker** — only work that outlives the change: follow-ups nobody will pick up during this build, work belonging to another repo, scope deliberately deferred.
+- **`tasks.md` is the source of truth.** It archives with the change, so it stays the readable record of what the change actually took, long after the issues are closed. Its ticked boxes are what [change-review](https://aihero.dev/skills-change-review) reads to decide the change is done.
+- **The issue is the execution surface.** Each ticket is built in its own fresh session, so it needs a work order that outlives any one context window — with the change id, the requirements it covers, and its blocking edges as native links.
 
-Escalating by default is the failure mode: a ticket duplicated onto the tracker gives the change two sources of truth. Every slice must also trace back to a requirement in the delta specs — one that can't is scope drift, and it goes back through propose rather than into the list.
+They stay one-to-one, and the direction is fixed: `tasks.md` is written first, issues are cut from it, issue numbers get written back. When a ticket's PR merges you tick its box *and* close its issue — an issue closed without the tick leaves the change looking unfinished.
+
+Work that *doesn't* belong to the change — a follow-up, another repo's problem, scope deliberately deferred — becomes a standalone issue instead, never a task. A ticket of this change is one that must land for the change to archive; everything else is just an issue that happened to be noticed here.
+
+Every slice must trace back to a requirement in the delta specs, and every requirement must be covered by some slice. A slice you can't trace is scope drift and goes back through propose; a requirement no slice covers means the breakdown isn't finished.
 
 Work the **frontier**: any ticket whose blockers are all done. For a purely linear chain that means top to bottom.
 
@@ -54,7 +58,7 @@ One shape breaks the tracer-bullet rule: a **wide refactor** — a single mechan
 `to-tickets` is a step in the main build chain:
 
 ```txt
-grill-with-docs → to-spec → to-tickets → implement → code-review
+grill-with-docs → to-spec → to-tickets → implement → code-review → change-review
 ```
 
-It sits between [to-spec](https://aihero.dev/skills-to-spec), which hands it an approved change with delta specs to slice against, and [implement](https://aihero.dev/skills-implement), which builds each ticket, driving [tdd](https://aihero.dev/skills-tdd) internally to write the tests test-first, before its [code-review](https://aihero.dev/skills-code-review) pass. Work the frontier one ticket per fresh context, clearing between them. When you're unsure which skill or flow fits, [ask-matt](https://aihero.dev/skills-ask-matt) routes you.
+It sits between [to-spec](https://aihero.dev/skills-to-spec), which hands it a merged change with delta specs to slice against, and [implement](https://aihero.dev/skills-implement), which builds each ticket, driving [tdd](https://aihero.dev/skills-tdd) internally to write the tests test-first, before its [code-review](https://aihero.dev/skills-code-review) pass. Work the frontier one ticket per fresh session. Once every box it wrote is ticked, [change-review](https://aihero.dev/skills-change-review) is the gate that archives the change. When you're unsure which skill or flow fits, [ask-matt](https://aihero.dev/skills-ask-matt) routes you.
