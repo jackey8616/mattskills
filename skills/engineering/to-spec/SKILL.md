@@ -10,7 +10,7 @@ The output does **not** go to the issue tracker. Specs live in OpenSpec; the tra
 
 ## Precondition
 
-This skill writes OpenSpec artifacts, so `openspec/` must be initialized in the repo. If it isn't, stop and tell the user to run `openspec init` — do not fall back to publishing the spec somewhere else.
+This skill writes OpenSpec artifacts, so `openspec/` must be initialized in the repo. If it isn't, stop and tell the user to run `npx @fission-ai/openspec@latest init` — the CLI is the scoped `@fission-ai/openspec` package, not the unrelated `openspec` placeholder on npm. Do not fall back to publishing the spec somewhere else.
 
 Before writing, read the agent instructions `openspec init` generated (`openspec/AGENTS.md` or equivalent). **They own the exact artifact format, not this skill** — follow them over anything written here about file shape. Read `openspec/specs/` too: it is the source of truth for what the system does *today*, and the delta you're about to write is measured against it.
 

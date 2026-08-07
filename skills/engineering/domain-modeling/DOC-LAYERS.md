@@ -22,4 +22,4 @@ Because `openspec/specs/` owns "current state", the other two layers no longer h
 
 ## When there is no `openspec/`
 
-If the repo has no `openspec/` directory, the Behaviour layer has no home. Say so, and offer to run `openspec init`. Do not spill behaviour into the other two layers to compensate — an ADR that has absorbed a requirement is worse than a missing spec, because it will be read as a decision forever.
+If the repo has no `openspec/` directory, the Behaviour layer has no home. Say so, and offer to run `npx @fission-ai/openspec@latest init` (the CLI is the scoped `@fission-ai/openspec` package — the bare `openspec` name on npm is an unrelated placeholder). Do not spill behaviour into the other two layers to compensate — an ADR that has absorbed a requirement is worse than a missing spec, because it will be read as a decision forever.

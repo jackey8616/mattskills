@@ -66,9 +66,11 @@ Offer **multi-context** — a root `CONTEXT-MAP.md` pointing to per-context `CON
 
 If it isn't, say so and offer to initialize it:
 
-> `/to-spec`, `/to-tickets` and `/change-review` write into OpenSpec — `openspec/specs/` for what the system does today, `openspec/changes/<id>/` for each in-flight change. Without it those three skills stop rather than writing specs somewhere else. Run `openspec init`? (recommended: **yes**)
+> `/to-spec`, `/to-tickets` and `/change-review` write into OpenSpec — `openspec/specs/` for what the system does today, `openspec/changes/<id>/` for each in-flight change. Without it those three skills stop rather than writing specs somewhere else. Run `npx @fission-ai/openspec@latest init`? (recommended: **yes**)
 
-On yes, run `openspec init`, then confirm two things before moving on: an `openspec/specs/` directory exists, and the agent instructions it generated point at it. Those generated instructions own the artifact format — the skills defer to them, so they must actually be in place.
+The CLI is published as **`@fission-ai/openspec`**. The bare `openspec` name on npm is an unrelated placeholder package — installing it yields no working binary, so always use the scoped name when installing or invoking via `npx`. Once it's installed (globally, or as a dev dependency), the binary itself is just `openspec`.
+
+On yes, run it, then confirm two things before moving on: an `openspec/specs/` directory exists, and the agent instructions it generated point at it. Those generated instructions own the artifact format — the skills defer to them, so they must actually be in place.
 
 On no, note that the three spec skills will be unavailable until the user initializes it, and carry on. Don't configure a fallback; there isn't one.
 

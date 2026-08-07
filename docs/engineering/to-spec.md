@@ -24,7 +24,7 @@ Reach for it once a change has been talked through and the domain language is se
 
 ## Prerequisites
 
-`to-spec` writes OpenSpec artifacts, so the repo needs `openspec/` initialized — run `openspec init` if it isn't. There is no fallback: if the spec layer has no home, the skill stops rather than publishing the spec somewhere it doesn't belong.
+`to-spec` writes OpenSpec artifacts, so the repo needs `openspec/` initialized — run `npx @fission-ai/openspec@latest init` if it isn't. (The CLI is the scoped `@fission-ai/openspec` package; the bare `openspec` name on npm is an unrelated placeholder.) There is no fallback: if the spec layer has no home, the skill stops rather than publishing the spec somewhere it doesn't belong.
 
 The instructions `openspec init` generates own the artifact format, not this skill. `to-spec` reads them, and reads `openspec/specs/` — the record of what the system does today — before writing the delta.
 
