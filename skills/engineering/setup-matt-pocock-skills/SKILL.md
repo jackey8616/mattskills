@@ -11,6 +11,7 @@ Scaffold the per-repo configuration that the engineering skills assume:
 - **Issue tracker** — where issues live (GitHub by default; local markdown is also supported out of the box)
 - **Triage labels** — the strings used for the five canonical triage roles
 - **Domain docs** — where `CONTEXT.md` and ADRs live, and the consumer rules for reading them
+- **OpenSpec** — the spec layer `/to-spec`, `/to-tickets` and `/change-review` write into
 
 This is a prompt-driven skill, not a deterministic script. Explore, present what you found, confirm with the user, then write.
 
@@ -24,6 +25,7 @@ Look at the current repo to understand its starting state. Read whatever exists;
 - `AGENTS.md` and `CLAUDE.md` at the repo root — does either exist? Is there already an `## Agent skills` section in either?
 - `CONTEXT.md` and `CONTEXT-MAP.md` at the repo root
 - `docs/adr/` and any `src/*/docs/adr/` directories
+- `openspec/` — is the spec layer initialized? Is there an `openspec/AGENTS.md` (or equivalent) and an `openspec/specs/`?
 - `docs/agents/` — does this skill's prior output already exist?
 - `.scratch/` — sign that a local-markdown issue tracker convention is already in use
 - Is the `triage` skill installed? (a `triage` skill folder alongside this one, or `triage` in your available skills.) This decides whether Section B runs at all.
@@ -37,7 +39,7 @@ Lead each section with the recommended answer so the user can accept it in a wor
 
 **Section A — Issue tracker.**
 
-> Explainer: The "issue tracker" is where issues live for this repo. Skills like `to-tickets`, `triage`, `to-spec`, and `qa` read from and write to it — they need to know whether to call `gh issue create`, write a markdown file under `.scratch/`, or follow some other workflow you describe. Pick the place you actually track work for this repo.
+> Explainer: The "issue tracker" is where issues live for this repo. Skills like `to-tickets`, `triage`, and `wayfinder` read from and write to it — they need to know whether to call `gh issue create`, write a markdown file under `.scratch/`, or follow some other workflow you describe. Pick the place you actually track work for this repo. (Specs don't live here — those are OpenSpec changes, see Section D.)
 
 Default posture: these skills were designed for GitHub. If a `git remote` points at GitHub, propose that. If a `git remote` points at GitLab (`gitlab.com` or a self-hosted host), propose GitLab. Otherwise (or if the user prefers), offer:
 
@@ -59,6 +61,18 @@ The defaults are the five canonical roles, each label string equal to its name: 
 **Section C — Domain docs.** Default to **single-context** — one `CONTEXT.md` + `docs/adr/` at the repo root. This fits almost every repo; write it without asking.
 
 Offer **multi-context** — a root `CONTEXT-MAP.md` pointing to per-context `CONTEXT.md` files — only when exploration found monorepo signals. Then confirm which layout they want.
+
+**Section D — OpenSpec.** Skip this section entirely if exploration found `openspec/` already initialized — just note that it's there.
+
+If it isn't, say so and offer to initialize it:
+
+> `/to-spec`, `/to-tickets` and `/change-review` write into OpenSpec — `openspec/specs/` for what the system does today, `openspec/changes/<id>/` for each in-flight change. Without it those three skills stop rather than writing specs somewhere else. Run `npx @fission-ai/openspec@latest init`? (recommended: **yes**)
+
+The CLI is published as **`@fission-ai/openspec`**. The bare `openspec` name on npm is an unrelated placeholder package — installing it yields no working binary, so always use the scoped name when installing or invoking via `npx`. Once it's installed (globally, or as a dev dependency), the binary itself is just `openspec`.
+
+On yes, run it, then confirm two things before moving on: an `openspec/specs/` directory exists, and the agent instructions it generated point at it. Those generated instructions own the artifact format — the skills defer to them, so they must actually be in place.
+
+On no, note that the three spec skills will be unavailable until the user initializes it, and carry on. Don't configure a fallback; there isn't one.
 
 ### 3. Confirm and edit
 
@@ -97,9 +111,13 @@ The block:
 ### Domain docs
 
 [one-line summary of layout — "single-context" or "multi-context"]. See `docs/agents/domain.md`.
+
+### Specs
+
+Specs are OpenSpec changes under `openspec/changes/<id>/`; `openspec/specs/` is the source of truth for current behaviour. ADRs in `docs/adr/` are immutable once accepted. See `docs/agents/domain.md`.
 ```
 
-Include the `### Triage labels` sub-block, and write `docs/agents/triage-labels.md`, only when `triage` is installed and Section B ran. When it isn't, both are omitted.
+Include the `### Triage labels` sub-block, and write `docs/agents/triage-labels.md`, only when `triage` is installed and Section B ran. When it isn't, both are omitted. Include the `### Specs` sub-block only when OpenSpec is initialized — after Section D, if the user accepted.
 
 Then write the docs files using the seed templates in this skill folder as a starting point:
 

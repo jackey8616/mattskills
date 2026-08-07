@@ -20,14 +20,18 @@ The route most work travels. You have an idea and want it built.
    - **`/prototype`** to answer the question with throwaway code,
    - **`/handoff`** back what you learned, and reference it from the original idea thread.
 3. **Branch — is this a multi-session build?**
-   - **Yes** → **`/to-spec`** (turn the thread into a spec), then **`/to-tickets`** to split it into tracer-bullet tickets, each declaring its **blocking edges**. On a local tracker that's one file per ticket under `.scratch/<feature>/issues/`, worked blockers-first by hand; on a real tracker the edges become native blocking links, so any ticket whose blockers are done can be grabbed — kick off **`/implement`** per ticket, **clearing context between each one**.
+   - **Yes** → **`/to-spec`** turns the thread into an **OpenSpec change proposal** under `openspec/changes/<id>/`. Review and merge that on its own first — the merged proposal is what fixes the scope. Then **`/to-tickets`** slices the merged change into tracer-bullet tickets with **blocking edges**, writes them into `tasks.md`, and publishes **one issue per ticket**. Work the **frontier** — any ticket whose blockers are done — one **fresh session per issue**: `/implement`, merge, then tick that ticket's box in `tasks.md`.
    - **No** → **`/implement`** right here, in the same context window.
 
    Either way, **`/implement`** builds each issue by driving **`/tdd`** internally — one red-green slice at a time — then closes out by running **`/code-review`**, a two-axis review (Standards + Spec) of the diff, before committing. Reach for **`/tdd`** on its own when you just want to build a concrete behaviour test-first without a full spec, and **`/code-review`** on its own whenever you want to review a branch or PR against a fixed point.
 
+4. **Close the change.** Once every box in `tasks.md` is ticked, **`/change-review`** is the gate before archiving — two axes over the change as a whole: **Coverage** (every delta requirement built *and* held down by a test) and **Fidelity** (nothing shipped that nobody proposed). Tickets that each passed `/code-review` still add up to a change with an untested scenario or three features that were decided during implementation. On a clean verdict it archives, merging the deltas into `openspec/specs/` — which is what makes the specs the source of truth for the next change.
+
 ### Context hygiene
 
-Keep steps 1–3 in **one unbroken context window** — don't compact or clear until after `/to-tickets` — so the grilling, spec, and tickets all build on the same thinking. Each `/implement` then starts fresh, working from the ticket.
+Keep steps 1–2 and `/to-spec` in **one unbroken context window** — don't compact or clear until the proposal is written — so the grilling and the spec build on the same thinking.
+
+After that the artifacts carry the context, not the conversation. `/to-tickets` reads the merged change off disk, each `/implement` starts fresh from its issue, and `/change-review` reads the change and the diff. All of them are meant to run in their own session.
 
 The limit on this is the **[smart zone](https://www.aihero.dev/ai-coding-dictionary/smart-zone)**: the window (~120k tokens on state-of-the-art models) within which the model still reasons sharply. If a session approaches it before `/to-tickets`, don't push on degraded — `/handoff` and continue in a fresh thread.
 
@@ -55,7 +59,7 @@ Not feature work — upkeep.
 
 Two model-invoked references that run *beneath* the other skills — each the single source of truth for its vocabulary. Reach for them directly when the **words**, not the process, are the problem; or let the skills above pull them in.
 
-- **`/domain-modeling`** — sharpen the project's *domain* language: challenge a fuzzy term, resolve an overloaded word ("account" doing three jobs), record a hard-to-reverse decision as an ADR. It's the active discipline `/grill-with-docs` drives to keep `CONTEXT.md` a clean glossary.
+- **`/domain-modeling`** — sharpen the project's *domain* language: challenge a fuzzy term, resolve an overloaded word ("account" doing three jobs), record a hard-to-reverse decision as an ADR. It's the active discipline `/grill-with-docs` drives to keep `CONTEXT.md` a clean glossary. It also owns the **layer boundary**: behaviour lives in `openspec/specs/` (mutable), decisions in `docs/adr/` (frozen once accepted — reverse one by writing a superseding ADR, never by editing it), language in `CONTEXT.md`.
 - **`/codebase-design`** — the deep-module vocabulary (module, interface, depth, seam, adapter, leverage, locality) for designing a module's *shape*: a lot of behaviour behind a small interface at a clean seam. `/tdd` and `/improve-codebase-architecture` both speak it.
 
 ## Crossing sessions
