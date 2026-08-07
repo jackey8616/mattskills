@@ -89,7 +89,9 @@ Then validate the change against the OpenSpec toolchain (`openspec validate <cha
 
 ### 6. Publish one issue per ticket
 
-Publish in dependency order — blockers first — so each ticket's blocking edges can reference real identifiers. Use the platform's native blocking / sub-issue relationship where it has one; otherwise write the "Blocked by" section. Apply the `ready-for-agent` triage label unless instructed otherwise — the tickets are agent-grabbable by construction.
+**On a local-markdown tracker, skip this step.** `tasks.md` is already a local markdown checklist in the repo — a second set of files under `.scratch/` would be pure duplication, and duplication is what the source-of-truth rule exists to prevent. Say that you're stopping at `tasks.md` and move on.
+
+**On a real tracker (GitHub, GitLab, Linear, …)**, publish in dependency order — blockers first — so each ticket's blocking edges can reference real identifiers. Use the platform's native blocking / sub-issue relationship where it has one; otherwise write the "Blocked by" section. Apply the `ready-for-agent` triage label unless instructed otherwise — the tickets are agent-grabbable by construction.
 
 Write the issue numbers back into `tasks.md` as you go, so the two stay linked in both directions.
 
@@ -126,7 +128,7 @@ Avoid specific file paths or code snippets — they go stale fast. Exception: if
 
 Work the **frontier**: any ticket whose blockers are all done. For a purely linear chain that means top to bottom. Each ticket gets its **own fresh session** — `/implement` builds it and closes out with `/code-review`, then it merges.
 
-**When a ticket's PR merges, tick its box in `tasks.md` and close its issue.** The tick is what `/change-review` reads to decide the change is ready to archive; an issue closed without the tick leaves the change looking unfinished.
+**When a ticket's PR merges, tick its box in `tasks.md`** and close its issue if it has one. The tick is what `/change-review` reads to decide the change is ready to archive; an issue closed without the tick leaves the change looking unfinished.
 
 Once every box is ticked, run `/change-review` — the gate before archiving the change.
 
