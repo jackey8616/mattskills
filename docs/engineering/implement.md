@@ -28,12 +28,18 @@ The idea `implement` runs on is the **seam** — the stable interface a feature 
 
 Around that core it keeps the loop tight — typecheck often, run single test files as it goes, run the whole suite once at the end — then closes out with a review pass and a commit to the current branch.
 
+## One ticket, and the box it ticks
+
+`implement` builds the requirements **its ticket** covers, not the whole change. When the ticket names an OpenSpec change it reads that change's proposal and delta specs first, then stays inside its slice — building ahead is how a tracer bullet stops being one. Scope it discovers that the delta specs don't cover doesn't get absorbed; it stops and says so, and that scope goes back through propose.
+
+The last step is the one that's easy to forget and expensive to skip: **tick the ticket's box in `tasks.md`**. [change-review](https://aihero.dev/skills-change-review) reads those ticks to decide the change is ready to archive, so a box nobody ticked stalls the whole change even though the work has already shipped.
+
 ## Where it fits
 
 `implement` is the build step near the end of the main chain, just before the review:
 
 ```txt
-grill-with-docs → to-spec → to-tickets → implement → code-review
+grill-with-docs → to-spec → to-tickets → implement → code-review → change-review
 ```
 
-Reach for it after the work has been specced and sequenced, not before. Its key neighbours are [to-tickets](https://aihero.dev/skills-to-tickets), which produces the tickets — each declaring its blocking edges — that it works through, and [tdd](https://aihero.dev/skills-tdd), which it drives internally to write the tests at each seam before running its own [code-review](https://aihero.dev/skills-code-review) pass and committing. When you're unsure which skill or flow fits, [ask-matt](https://aihero.dev/skills-ask-matt) routes you.
+Reach for it after the work has been specced and sequenced, not before — one fresh session per ticket. Its key neighbours are [to-tickets](https://aihero.dev/skills-to-tickets), which produces the tickets — each declaring its blocking edges — that it works through, and [tdd](https://aihero.dev/skills-tdd), which it drives internally to write the tests at each seam before running its own [code-review](https://aihero.dev/skills-code-review) pass and committing. Once every ticket is built and ticked, [change-review](https://aihero.dev/skills-change-review) closes the change out. When you're unsure which skill or flow fits, [ask-matt](https://aihero.dev/skills-ask-matt) routes you.
