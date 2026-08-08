@@ -18,6 +18,13 @@ A `wayfinder` unit — a child **Issue** of a `wayfinder:map` holding a *questio
 **Triage role**:
 A canonical state-machine label applied to an **Issue** during triage (e.g. `needs-triage`, `ready-for-afk`). Each role maps to a real label string in the **Issue tracker** via `docs/agents/triage-labels.md`.
 
+**Change**:
+A unit of work under `openspec/changes/<id>/` — the folder holding a **Proposal**, its delta specs, its design notes and its task list. It archives when the work lands, merging its deltas into current state.
+_Avoid_: change proposal (ambiguous — see Flagged ambiguities)
+
+**Proposal**:
+The `proposal.md` file inside a **Change**: the problem, the solution in the user's own words, and what is explicitly out of scope. Written by a `grilling` session as its closing act. It is one file in a **Change**, not the **Change** itself.
+
 **Settled question**:
 A node in a `grilling` design tree that the user has answered. The unit of progress in an interview, and the thing that pushes the frontier outward. Most settle into a change's rationale; a few resolve language; very few clear the ADR gate.
 _Avoid_: decision (overloaded — see Flagged ambiguities)
@@ -39,5 +46,6 @@ _Avoid_: order friendly (ambiguous — reads as "meant to be read in order"), cl
 
 - "backlog" was previously used to mean both the *tool* hosting issues and the *body of work* inside it — resolved: the tool is the **Issue tracker**; "backlog" is no longer used as a domain term.
 - "backlog backend" / "backlog manager" — resolved: collapsed into **Issue tracker**.
+- "change proposal" meant both the whole `openspec/changes/<id>/` folder and the `proposal.md` file inside it. Resolved: the folder is a **Change**, the file is a **Proposal**. The two have different authors — a `grilling` writes the **Proposal**, `to-spec` writes the delta specs — so conflating them routes requirements into the wrong file.
 - "decision" was doing four jobs: a node in a `grilling` design tree, the thing an ADR records, a **Decision ticket**, and a **Decision point**. Resolved: the grilling node is a **Settled question**, and "decision" unqualified now means only what clears the ADR gate. The reasoning that a grilling is a decision tree, *therefore* its purpose is to produce ADRs, is the error this ambiguity produces — most **Settled questions** never become ADRs.
 - "order friendly" was used for the property an ADR needs before its parts can be superseded individually — resolved: it means *addressable*, not *readable in sequence*. The unit it addresses is a **Decision point**.
