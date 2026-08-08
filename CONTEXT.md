@@ -18,6 +18,10 @@ A `wayfinder` unit — a child **Issue** of a `wayfinder:map` holding a *questio
 **Triage role**:
 A canonical state-machine label applied to an **Issue** during triage (e.g. `needs-triage`, `ready-for-afk`). Each role maps to a real label string in the **Issue tracker** via `docs/agents/triage-labels.md`.
 
+**Settled question**:
+A node in a `grilling` design tree that the user has answered. The unit of progress in an interview, and the thing that pushes the frontier outward. Most settle into a change's rationale; a few resolve language; very few clear the ADR gate.
+_Avoid_: decision (overloaded — see Flagged ambiguities)
+
 **Decision point**:
 A numbered, stable unit inside an ADR — the smallest thing a later ADR can supersede. Writing an ADR as decision points is what makes it *addressable*, so supersession can name a part rather than retiring the whole document.
 _Avoid_: order friendly (ambiguous — reads as "meant to be read in order"), clause, section
@@ -29,9 +33,11 @@ _Avoid_: order friendly (ambiguous — reads as "meant to be read in order"), cl
 - A **Decision ticket** is an **Issue** (a child of a `wayfinder:map`)
 - An ADR holds one or more **Decision points**; supersession targets a **Decision point**, not the ADR
 - A **Decision point** is not a **Decision ticket** — one is a part of a written decision, the other is a unit of work that produces one
+- A `grilling` session produces many **Settled questions**; only the few clearing the ADR gate become **Decision points** in an ADR
 
 ## Flagged ambiguities
 
 - "backlog" was previously used to mean both the *tool* hosting issues and the *body of work* inside it — resolved: the tool is the **Issue tracker**; "backlog" is no longer used as a domain term.
 - "backlog backend" / "backlog manager" — resolved: collapsed into **Issue tracker**.
+- "decision" was doing four jobs: a node in a `grilling` design tree, the thing an ADR records, a **Decision ticket**, and a **Decision point**. Resolved: the grilling node is a **Settled question**, and "decision" unqualified now means only what clears the ADR gate. The reasoning that a grilling is a decision tree, *therefore* its purpose is to produce ADRs, is the error this ambiguity produces — most **Settled questions** never become ADRs.
 - "order friendly" was used for the property an ADR needs before its parts can be superseded individually — resolved: it means *addressable*, not *readable in sequence*. The unit it addresses is a **Decision point**.
