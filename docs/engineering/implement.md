@@ -2,6 +2,8 @@
 
 `implement` builds work that has already been decided. You point it at a [ticket](https://www.aihero.dev/ai-coding-dictionary/ticket), a [spec](https://www.aihero.dev/ai-coding-dictionary/spec), or the plan you just agreed in the conversation, and it writes the code, drives [tdd](https://aihero.dev/skills-tdd) at the seams, typechecks as it goes, runs [code-review](https://aihero.dev/skills-code-review) at the end, and commits to the current branch.
 
+It builds **only what its ticket covers**. When the ticket belongs to a change, it reads that change's proposal and delta specs first — and if it finds work the delta specs don't describe, it stops and says so rather than absorbing it. Scope is decided at propose time; a run that quietly widens it is how a change ends up shipping things nobody agreed to.
+
 It never reopens the plan. There is no interview, no clarifying round, no proposal of a different approach. Whatever was settled upstream is the input, and the skill's whole job is to turn that into a commit. That is what separates it from typing "build this" at a fresh [agent](https://www.aihero.dev/ai-coding-dictionary/agent), which will happily redesign the work while it builds it.
 
 ## When to reach for it
@@ -87,10 +89,12 @@ Probably the ticket is too big rather than the skill being misused. A run does c
 `implement` is the build step of the main chain, second from the end:
 
 ```txt
-grill-with-docs → to-spec → to-tickets → implement → code-review
+grill-with-docs → to-spec → to-tickets → implement → code-review → change-review
 ```
 
 Its neighbours are [to-tickets](https://aihero.dev/skills-to-tickets), which produces the tickets it consumes and declares the blocking edges that decide their order; [tdd](https://aihero.dev/skills-tdd), which it drives internally at each seam; and [code-review](https://aihero.dev/skills-code-review), which it runs before committing. It sits downstream of the planning skills and trusts them. It does not re-validate the shape of what it was handed, so a badly-structured map or a horizontally-layered ticket gets built as written.
+
+It ends at a commit, so it is never the last thing to run on a change. Its session is over before the work merges, which is why closing the change out — reconciling the checklist and archiving — belongs to [change-review](https://aihero.dev/skills-change-review) and not here.
 
 That trust is why [wayfinder](https://aihero.dev/skills-wayfinder) merges onto the chain at [to-spec](https://aihero.dev/skills-to-spec) rather than looping its map straight into `implement`. Go straight to `implement` from a map only when the effort turned out genuinely small.
 

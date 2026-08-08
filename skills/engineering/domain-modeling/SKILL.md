@@ -7,6 +7,12 @@ description: Build and sharpen a project's domain model. Use when the user wants
 
 Actively build and sharpen the project's domain model as you design. This is the *active* discipline — challenging terms, inventing edge-case scenarios, and writing the glossary and decisions down the moment they crystallise. (Merely *reading* `CONTEXT.md` for vocabulary is not this skill — that's a one-line habit any skill can do. This skill is for when you're changing the model, not just consuming it.)
 
+## Where things go
+
+This skill owns two of the three document layers — the **glossary** and the **decisions**. It does not own behaviour: what the system currently does lives in `openspec/specs/`, and what a change will do lives in that change's folder.
+
+Read [DOC-LAYERS.md](./DOC-LAYERS.md) before writing anything. It is the routing rule, and it is what lets ADRs freeze and `CONTEXT.md` stay a glossary. Read `openspec/specs/` too when it exists — knowing what is already recorded there is how you tell a requirement apart from a decision.
+
 ## File structure
 
 Most repos have a single context:
@@ -18,6 +24,7 @@ Most repos have a single context:
 │   └── adr/
 │       ├── 0001-event-sourced-orders.md
 │       └── 0002-postgres-for-write-model.md
+├── openspec/                             ← behaviour, owned by OpenSpec — not this skill
 └── src/
 ```
 
@@ -61,7 +68,7 @@ When the user states how something works, check whether the code agrees. If you 
 
 When a term is resolved, update `CONTEXT.md` right there. Don't batch these up — capture them as they happen. Use the format in [CONTEXT-FORMAT.md](./CONTEXT-FORMAT.md).
 
-`CONTEXT.md` should be totally devoid of implementation details. Do not treat `CONTEXT.md` as a spec, a scratch pad, or a repository for implementation decisions. It is a glossary and nothing else.
+`CONTEXT.md` should be totally devoid of implementation details. Do not treat `CONTEXT.md` as a spec, a scratch pad, or a repository for implementation decisions. It is a glossary and nothing else. Requirements go to the active change's delta specs — never here.
 
 ### Offer ADRs sparingly
 
@@ -71,4 +78,14 @@ Only offer to create an ADR when all three are true:
 2. **Surprising without context** — a future reader will wonder "why did they do it this way?"
 3. **The result of a real trade-off** — there were genuine alternatives and you picked one for specific reasons
 
-If any of the three is missing, skip the ADR. Use the format in [ADR-FORMAT.md](./ADR-FORMAT.md).
+If any of the three is missing, skip the ADR — silently. Don't offer one anyway, and don't mention the one you decided against. Rationale that fails the gate goes in the active change's `design.md`, where it archives with the change.
+
+Write the ADR as numbered **decision points**, 1-3 sentences each. Most have exactly one. Use the format in [ADR-FORMAT.md](./ADR-FORMAT.md).
+
+### Never rewrite an accepted ADR
+
+Within a session you may **create** a new ADR, or change an existing ADR's **frontmatter**. That is the entire set of permitted writes to `docs/adr/`.
+
+You may not edit the title, the context line, or any decision point of an accepted ADR — not to correct it, not to bring it in line with how the code works now, not to trim it to the format. When a decision is reversed, write a new ADR and mark the old one's frontmatter: `superseded` for a single point, `status` for the whole document.
+
+If a session's work contradicts an existing ADR, say so out loud and ask whether the decision is genuinely being reversed. **Drifting behaviour is not a reversal** — that belongs in a spec update, and the ADR stays exactly as it is.

@@ -26,10 +26,12 @@ Before going further, confirm the fixed point resolves (`git rev-parse <fixed-po
 
 Look for the originating spec, in this order:
 
-1. Issue references in the commit messages (`#123`, `Closes #45`, GitLab `!67`, etc.) — fetch via the workflow in `docs/agents/issue-tracker.md`.
-2. A path the user passed as an argument.
-3. A spec file under `docs/`, `specs/`, or `.scratch/` matching the branch name or feature.
+1. Issue references in the commit messages (`#123`, `Closes #45`, GitLab `!67`, etc.) — fetch via the workflow in `docs/agents/issue-tracker.md`. If the issue belongs to an OpenSpec change, the spec is that change's delta under `openspec/changes/<change-id>/specs/`.
+2. A path or change id the user passed as an argument.
+3. An active change under `openspec/changes/`, or a spec file under `docs/`, `specs/`, or `.scratch/` matching the branch name or feature.
 4. If nothing is found, ask the user where the spec is. If they say there isn't one, the **Spec** sub-agent will skip and report "no spec available".
+
+When the spec is an OpenSpec change, review the diff against **the requirements this ticket covers**, not the whole change. A ticket is one slice of a change and is not supposed to deliver the rest of it; judging it against everything reports the other tickets as missing. Reviewing the change as a whole is `/change-review`'s job.
 
 ### 3. Identify the standards sources
 

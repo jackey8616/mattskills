@@ -1,6 +1,8 @@
 ## What it does
 
-`to-tickets` takes a plan, a [spec](https://www.aihero.dev/ai-coding-dictionary/spec), or the conversation you are in, and breaks it into a set of **[tickets](https://www.aihero.dev/ai-coding-dictionary/ticket)** on your issue tracker. Each ticket declares its **blocking edges** — the other tickets that have to finish before it can start.
+`to-tickets` takes a change, a plan, or the conversation you are in, and breaks it into a set of **[tickets](https://www.aihero.dev/ai-coding-dictionary/ticket)**. Each ticket declares its **blocking edges** — the other tickets that have to finish before it can start.
+
+They land in two places, and only one of them is authoritative. The change's `tasks.md` is the **source of truth** and archives with the change; the tracker gets one issue cut from each item, with the issue reference written back so the two stay one-to-one. That is what lets [change-review](https://aihero.dev/skills-change-review) check the checklist against reality later instead of trusting the ticks.
 
 Every ticket is a **tracer bullet**: a narrow but complete path through every layer of the change — schema, API, UI, tests — that can be demoed on its own the moment it lands. That is the constraint that makes it behave differently from the obvious way to split work, which is to cut one layer at a time and integrate at the end. It also sizes each ticket to fit in a single fresh [context window](https://www.aihero.dev/ai-coding-dictionary/context-window), because the thing that will pick the ticket up is a [session](https://www.aihero.dev/ai-coding-dictionary/session) that has never seen your spec.
 
@@ -21,6 +23,10 @@ Tickets that `to-tickets` produced are agent-ready by construction. Don't run [t
 ## Prerequisites
 
 `to-tickets` publishes into a tracker, so [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) must have configured one for this repo, along with the triage-label vocabulary. Either kind works: a real tracker like GitHub or Linear, or local markdown files under `.scratch/`, which is supported out of the box.
+
+On a local-markdown tracker with an active change it stops at `tasks.md` — that file is already a local markdown checklist, and a second copy under `.scratch/` would be the duplication the source-of-truth rule exists to prevent.
+
+Run it **after the proposal has merged**. Slicing an unmerged proposal produces tickets for work that may still move.
 
 ## Tracer bullets, not layers
 
@@ -93,7 +99,7 @@ The skill stops at the artifact, and there is no auto-dispatch mode. Dispatch is
 `to-tickets` is a step in the main build chain:
 
 ```txt
-grill-with-docs → to-spec → to-tickets → implement → code-review
+grill-with-docs → to-spec → to-tickets → implement → code-review → change-review
 ```
 
-Upstream is [to-spec](https://aihero.dev/skills-to-spec), which hands it a settled spec to slice against — keep both in one unbroken context window. Downstream is [implement](https://aihero.dev/skills-implement), which builds one ticket per fresh session, driving [tdd](https://aihero.dev/skills-tdd) for the tests and closing with [code-review](https://aihero.dev/skills-code-review). When you're unsure which skill or flow fits, [ask-matt](https://aihero.dev/skills-ask-matt) routes you.
+Upstream is [to-spec](https://aihero.dev/skills-to-spec), which hands it a settled set of delta specs to slice against — keep both in one window, though the specs are files now, so it is a preference rather than a requirement. Downstream is [implement](https://aihero.dev/skills-implement), which builds one ticket per fresh session, driving [tdd](https://aihero.dev/skills-tdd) for the tests and closing with [code-review](https://aihero.dev/skills-code-review). At the end of the chain, [change-review](https://aihero.dev/skills-change-review) reads the `tasks.md` this skill wrote to decide whether the change is finished. When you're unsure which skill or flow fits, [ask-matt](https://aihero.dev/skills-ask-matt) routes you.

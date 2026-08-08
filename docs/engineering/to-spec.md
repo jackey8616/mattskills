@@ -1,8 +1,10 @@
 ## What it does
 
-`to-spec` turns the conversation you have just had into a **[spec](https://www.aihero.dev/ai-coding-dictionary/spec)**, and publishes it to your issue tracker as a single issue.
+`to-spec` turns the agreed proposal into the **delta specs** of an OpenSpec change — every behaviour the change adds, modifies or removes, written as requirements with concrete scenarios — and opens one tracker issue pointing at it.
 
-It does not interview you. By the time you reach for it the deciding is already done, so it synthesises what is known — from the thread, from the codebase, from your `CONTEXT.md` and ADRs — rather than opening a fresh round of questions. The spec is a record of decisions already made, not a place where new ones get made.
+It does not interview you. By the time you reach for it the deciding is already done and [grill-with-docs](https://aihero.dev/skills-grill-with-docs) has written the proposal to disk, so it synthesises from that file, the codebase, your `CONTEXT.md` and your ADRs rather than opening a fresh round of questions. The [spec](https://www.aihero.dev/ai-coding-dictionary/spec) is a record of decisions already made, not a place where new ones get made.
+
+The issue it opens is a **pointer, never a copy**. Requirements live in the change and nowhere else, because two copies of a requirement drift within a week and then neither is trustworthy.
 
 ## When to reach for it
 
@@ -19,7 +21,11 @@ Reach for it when the build is too big for one agent [session](https://www.aiher
 
 ## Prerequisites
 
-`to-spec` publishes the spec as an issue, so [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) must have configured a tracker and the triage-label vocabulary for this repo first. Either kind works: a real tracker like GitHub, or local markdown files under `.scratch/`, which is supported out of the box.
+Two things, and the first is a hard stop.
+
+`openspec/` must be initialized in the repo — this skill writes OpenSpec artifacts and will refuse rather than put the spec somewhere else. [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) offers to do it; by hand it is `npx @fission-ai/openspec@latest init`, and note the scope, because the bare `openspec` name on npm is an unrelated placeholder that installs no binary.
+
+The same setup must have configured a tracker and the triage-label vocabulary, for the pointer issue. Either kind works: a real tracker like GitHub, or local markdown files under `.scratch/`.
 
 ## The spec is a decision record
 
@@ -51,7 +57,7 @@ The main map issue — `/to-spec #<map_issue>`, not the individual decision tick
 Mostly for the agent, and it reads that way — complete, dense, reference-heavy. The parts worth your eyes are the seams and the out-of-scope section, because those are the two places a wrong decision is cheapest to catch and most expensive to discover later. Reading the whole thing end to end is a real complaint people have, and there is no summary mode: the honest answer is that if the spec surprises you, the grilling was too shallow, not the spec too long.
 
 **Do I keep the spec frozen once tickets start, or let the agent rewrite it?**
-Nothing keeps it in sync, so in practice it is a snapshot of what you knew at that moment, and it goes stale the first time implementation teaches you something. Treat it as throwaway once the work ships. The artifacts meant to outlive it are your `CONTEXT.md` and your ADRs — if something learned during implementation deserves to last, it belongs there, not in an edited spec.
+Frozen — but it isn't throwaway either. Once approved, the delta's scope is fixed: new scope goes back through the propose stage rather than being absorbed quietly, and [change-review](https://aihero.dev/skills-change-review) treats "a delta edited to match what got built" as the failure it exists to catch. What outlives the change is not the delta but what it becomes: on archive it merges into `openspec/specs/`, which is the standing record of what the system does. The delta itself archives with the change.
 
 **My work is a refactor or a module boundary, not a feature. Does the template fit?**
 Less well, and this is a known limitation. The template leans hard on user stories, which is the wrong shape for architectural work — you end up writing stories nobody asked for around decisions that are really about interfaces and invariants. Lean on the implementation-decisions and testing-decisions sections instead, and let the durable architectural calls land as ADRs via [grill-with-docs](https://aihero.dev/skills-grill-with-docs) rather than trying to make the spec carry them.
@@ -60,7 +66,7 @@ Less well, and this is a known limitation. The template leans hard on user stori
 No to both. It reads and respects the ADRs covering the area it touches, but it doesn't link them, and it doesn't search the tracker for overlapping issues before drafting — so a spec can quietly duplicate work someone already filed. Search the tracker yourself first if the area is busy.
 
 **`/to-tickets` couldn't read my spec — it kept truncating.**
-Very large specs can outgrow what a tracker issue will serve back cleanly, and there is no local copy to fall back on. The fix is context hygiene: don't [clear](https://www.aihero.dev/ai-coding-dictionary/clearing) or [compact](https://www.aihero.dev/ai-coding-dictionary/compaction) between `/to-spec` and `/to-tickets`. Run them in the same window and the spec never has to be re-fetched at all.
+This was a real failure when the spec lived in a tracker issue: a large one outgrew what the tracker would serve back, with no local copy to fall back on. The delta specs are files in the repo now, so there is nothing to truncate. Keeping `/to-spec` and `/to-tickets` in one window is still the better rhythm, but it is no longer load-bearing.
 
 ## It's working if
 
@@ -75,7 +81,7 @@ Very large specs can outgrow what a tracker issue will serve back cleanly, and t
 `to-spec` is a step in the main build chain, and only on the multi-session branch of it:
 
 ```txt
-grill-with-docs → to-spec → to-tickets → implement → code-review
+grill-with-docs → to-spec → to-tickets → implement → code-review → change-review
 ```
 
-Its neighbours upstream are [grill-with-docs](https://aihero.dev/skills-grill-with-docs), which does the deciding this skill only records, and [wayfinder](https://aihero.dev/skills-wayfinder), whose finished map merges onto the chain right here. Downstream, [to-tickets](https://aihero.dev/skills-to-tickets) cuts the spec into tracer-bullet tickets for [implement](https://aihero.dev/skills-implement) to build. When you're unsure which skill or flow fits, [ask-matt](https://aihero.dev/skills-ask-matt) routes you.
+Its neighbours upstream are [grill-with-docs](https://aihero.dev/skills-grill-with-docs), which does the deciding this skill only records and hands over the proposal it writes, and [wayfinder](https://aihero.dev/skills-wayfinder), whose finished map merges onto the chain right here. Downstream, [to-tickets](https://aihero.dev/skills-to-tickets) cuts the change into tracer-bullet tickets for [implement](https://aihero.dev/skills-implement) to build, and [change-review](https://aihero.dev/skills-change-review) closes it by archiving the deltas this skill wrote. When you're unsure which skill or flow fits, [ask-matt](https://aihero.dev/skills-ask-matt) routes you.
