@@ -14,8 +14,8 @@ Run typechecking regularly, single test files regularly, and the full test suite
 
 Once done, use /code-review to review the work.
 
-Commit your work to the current branch.
+Commit your work to the current branch. When the ticket belongs to an OpenSpec change, **tick its box in that change's `tasks.md` in the same commit** — the tick rides the work, so it lands exactly when the work lands. `/change-review` reads those ticks to decide the change is ready to archive, so a box nobody ticked stalls the whole change once the work ships.
 
-Then close the ticket out: **tick its box in the change's `tasks.md`** and close its issue. `/change-review` reads those ticks to decide the change is ready to archive, so a box nobody ticked stalls the whole change even though the work has shipped.
+Then hand off: push the branch, and open a PR if that's how this repo ships work. Where the ticket has an issue, put `Closes #<issue>` in the commit message and the PR body so the tracker closes it the moment the work reaches the default branch — and **leave the issue open until then**. Your session ends with the work on a branch — the merge ships it, and the merge is the reviewer's to make.
 
 Scope stops at the ticket. If the work turns out to need something the delta specs don't cover, say so and stop — new scope goes back through the propose stage, not into this session.

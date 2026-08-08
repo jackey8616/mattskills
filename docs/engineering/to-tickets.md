@@ -35,7 +35,7 @@ Each ticket lands twice, and knowing which copy is authoritative is the whole tr
 - **`tasks.md` is the source of truth.** It archives with the change, so it stays the readable record of what the change actually took, long after the issues are closed. Its ticked boxes are what [change-review](https://aihero.dev/skills-change-review) reads to decide the change is done.
 - **The issue is the execution surface.** Each ticket is built in its own fresh session, so it needs a work order that outlives any one context window — with the change id, the requirements it covers, and its blocking edges as native links.
 
-They stay one-to-one, and the direction is fixed: `tasks.md` is written first, issues are cut from it, issue numbers get written back. When a ticket's PR merges you tick its box *and* close its issue — an issue closed without the tick leaves the change looking unfinished.
+They stay one-to-one, and the direction is fixed: `tasks.md` is written first, issues are cut from it, issue numbers get written back. Closing a ticket out belongs to the *merge*, not to the session that built it: [implement](https://aihero.dev/skills-implement) commits the tick alongside the work and leaves a `Closes #` trailer, so the box lands and the issue closes at the same moment the code does.
 
 Work that *doesn't* belong to the change — a follow-up, another repo's problem, scope deliberately deferred — becomes a standalone issue instead, never a task. A ticket of this change is one that must land for the change to archive; everything else is just an issue that happened to be noticed here.
 

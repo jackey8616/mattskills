@@ -32,7 +32,13 @@ Around that core it keeps the loop tight — typecheck often, run single test fi
 
 `implement` builds the requirements **its ticket** covers, not the whole change. When the ticket names an OpenSpec change it reads that change's proposal and delta specs first, then stays inside its slice — building ahead is how a tracer bullet stops being one. Scope it discovers that the delta specs don't cover doesn't get absorbed; it stops and says so, and that scope goes back through propose.
 
-The last step is the one that's easy to forget and expensive to skip: **tick the ticket's box in `tasks.md`**. [change-review](https://aihero.dev/skills-change-review) reads those ticks to decide the change is ready to archive, so a box nobody ticked stalls the whole change even though the work has already shipped.
+The last step is the one that's easy to forget and expensive to skip: **tick the ticket's box in `tasks.md`** — in the same commit as the work, so the tick rides it. [change-review](https://aihero.dev/skills-change-review) reads those ticks to decide the change is ready to archive, so a box nobody ticked stalls the whole change once the work ships.
+
+## It stops at the branch
+
+Where `implement` *stops* is as deliberate as what it builds. The session ends with the work committed and pushed — a PR open, if that's how the repo ships work — and the ticket's issue still **open**. Merging is somebody else's call, and until that merge nothing has shipped.
+
+That's why the two closing actions are not done together. The tick is a file edit riding the commit, so it takes effect on merge. Closing the issue takes effect immediately — which, at the end of an implement session, would mark a ticket done while its branch sits unmerged. So `implement` leaves a `Closes #` trailer in the commit and PR body instead, and lets the merge close the issue. Both then land at the same moment the code does.
 
 ## Where it fits
 
