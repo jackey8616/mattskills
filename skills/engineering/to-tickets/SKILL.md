@@ -91,7 +91,9 @@ Then validate the change against the OpenSpec toolchain (`openspec validate <cha
 
 **On a local-markdown tracker, skip this step.** `tasks.md` is already a local markdown checklist in the repo — a second set of files under `.scratch/` would be pure duplication, and duplication is what the source-of-truth rule exists to prevent. Say that you're stopping at `tasks.md` and move on.
 
-**On a real tracker (GitHub, GitLab, Linear, …)**, publish in dependency order — blockers first — so each ticket's blocking edges can reference real identifiers. Use the platform's native blocking / sub-issue relationship where it has one; otherwise write the "Blocked by" section. Apply the `ready-for-agent` triage label unless instructed otherwise — the tickets are agent-grabbable by construction.
+**On a real tracker (GitHub, GitLab, Linear, …)**, publish in dependency order — blockers first — so each ticket's blocking edges can reference real identifiers. Use the platform's native blocking / sub-issue relationship where it has one; otherwise write the "Blocked by" section.
+
+Then label each ticket by **delegability**, which is a different property from spec completeness and the one the label actually claims. A ticket is `ready-for-agent` when an AFK agent could carry it alone; anything needing a person — a judgment call, external access, a design decision, manual testing — is `ready-for-human`, with the reason named so the next reader inherits it instead of rediscovering it. Slicing a ticket well does not make it delegable.
 
 Write the issue numbers back into `tasks.md` as you go, so the two stay linked in both directions.
 

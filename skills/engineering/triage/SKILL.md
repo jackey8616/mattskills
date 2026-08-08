@@ -55,11 +55,12 @@ The maintainer invokes `/triage` and describes what they want in natural languag
 
 ## Show what needs attention
 
-Query the issue tracker and present three buckets, oldest first:
+Query the issue tracker and present four buckets, oldest first:
 
 1. **Unlabeled** — never triaged.
 2. **`needs-triage`** — evaluation in progress.
 3. **`needs-info` with reporter activity since the last triage notes** — needs re-evaluation.
+4. **`ready-for-agent` with activity since the label was applied** — a comment, a blocked run, a demotion note from `/implement`. `ready-for-agent` is a claim that only running the ticket can falsify, so activity after the label is the signal that someone met the thing the label didn't predict. A ticket sitting quietly behind its blockers is correctly labelled and stays out of this bucket.
 
 When PRs are in scope, include external PRs in these buckets and tag each line `[PR]` or `[issue]`. Discovery surfaces only *external* PRs (the tracker config defines who counts as external) — a collaborator's in-flight PR is not triage work. This filter is discovery-only; an explicitly named PR is always triaged regardless of author.
 

@@ -39,9 +39,9 @@ The limit on this is the **[smart zone](https://www.aihero.dev/ai-coding-diction
 
 A starting situation that generates work, then merges onto the main flow.
 
-- **Bugs and requests piling up** → **`/triage`**. It moves issues through triage roles and produces agent-ready issues, which **`/implement`** later picks up.
+- **Bugs and requests piling up** → **`/triage`**. It moves issues through triage roles and produces agent-ready issues, which **`/implement`** later picks up. The edge runs both ways: `/implement` demotes a ticket to `ready-for-human` when it hits a **capability wall** — access, environment, permissions it can't get past — and triage re-surfaces `ready-for-agent` tickets that have had activity since they were labelled, so the column doesn't quietly go stale.
 
-  Triage is only for issues **you didn't create** — bug reports, incoming feature requests, anything that arrives raw. Tickets that `/to-tickets` produced are already agent-ready, so **don't triage them**.
+  Triage is only for issues **you didn't create** — bug reports, incoming feature requests, anything that arrives raw. A ticket `/to-tickets` published already carries a delegability label, so it needs no triage on the way in — only later, if something contradicts that label.
 
 - **Something's broken** → **`/diagnosing-bugs`**. For the hard ones: the bug that resists a first glance, the intermittent flake, the regression that crept in between two known-good states. It refuses to theorise until it has a **tight feedback loop** — one command that already goes red on *this* bug — then fixes with a regression test. Its post-mortem hands off to **`/improve-codebase-architecture`** when the real finding is that there's no good seam to lock the bug down.
 

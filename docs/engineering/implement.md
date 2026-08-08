@@ -32,6 +32,8 @@ Around that core it keeps the loop tight — typecheck often, run single test fi
 
 `implement` builds the requirements **its ticket** covers, not the whole change. When the ticket names an OpenSpec change it reads that change's proposal and delta specs first, then stays inside its slice — building ahead is how a tracer bullet stops being one. Scope it discovers that the delta specs don't cover doesn't get absorbed; it stops and says so, and that scope goes back through propose.
 
+A **capability wall** stops it the same way, for a different reason: the criteria are clear but unreachable from where it sits — no route to a required source, a login it doesn't have, hardware, a paid account. It records the wall on the issue and moves the triage label to `ready-for-human`, because running the ticket is the only moment `ready-for-agent` can be tested and `implement` is the one doing the running. What it won't do is ship a result *around* the wall — a third-party number behind a disclaimer, a stubbed value — which is how one blocked run becomes a ticket that keeps advertising itself as agent-ready.
+
 The last step is the one that's easy to forget and expensive to skip: **tick the ticket's box in `tasks.md`** — in the same commit as the work, so the tick rides it. [change-review](https://aihero.dev/skills-change-review) reads those ticks to decide the change is ready to archive, so a box nobody ticked stalls the whole change once the work ships.
 
 ## It stops at the branch

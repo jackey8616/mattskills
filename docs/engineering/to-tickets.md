@@ -26,7 +26,7 @@ Reach for it right after a change proposal merges, when you want it split into b
 
 The change must be **merged**, not just written. The merged proposal is what fixes the scope; slicing an unmerged one produces tickets for work that may still move under you. `to-tickets` slices against the change's delta specs and will send you back to [to-spec](https://aihero.dev/skills-to-spec) rather than invent scope of its own.
 
-It publishes issues, so [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) must have configured the tracker and its triage label vocabulary for this repo first. It applies the ready-for-agent label as it publishes. On a **local-markdown** tracker it stops at `tasks.md` — that already *is* a local markdown checklist in the repo, and a second copy under `.scratch/` would be the duplication the source-of-truth rule exists to prevent.
+It publishes issues, so [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) must have configured the tracker and its triage label vocabulary for this repo first. It labels each ticket by **delegability** as it publishes — `ready-for-agent` where an AFK agent could carry the ticket alone, `ready-for-human` where something in it needs a person (a judgment call, external access, a design decision, manual testing). Spec completeness and delegability are different properties: a well-sliced ticket can still be one only a human can run. On a **local-markdown** tracker it stops at `tasks.md` — that already *is* a local markdown checklist in the repo, and a second copy under `.scratch/` would be the duplication the source-of-truth rule exists to prevent.
 
 ## Two places, one in charge
 
