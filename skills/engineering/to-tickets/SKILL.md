@@ -14,7 +14,11 @@ The issue tracker and triage label vocabulary should have been provided to you �
 
 ### 1. Gather context
 
-Work from whatever is already in the conversation context. If the user passes a reference (a spec path, an issue number or URL) as an argument, fetch it and read its full body and comments.
+Work from the **active change**: read its `proposal.md`, its delta specs and its `design.md`. The delta specs are the thing you're slicing — every requirement in them has to end up covered by some ticket.
+
+If the user passes a reference (a change id, a spec path, an issue number or URL) as an argument, fetch it and read its full body and comments. With no change and no reference, work from whatever is already in the conversation context.
+
+Run this **after the proposal has merged**. Slicing an unmerged proposal produces tickets for work that may still move.
 
 ### 2. Explore the codebase (optional)
 
@@ -55,12 +59,20 @@ Ask the user:
 
 Iterate until the user approves the breakdown.
 
-### 5. Publish the tickets to the configured tracker
+### 5. Write the tickets into `tasks.md`
 
-Publish the approved tickets. **How** depends on the tracker `/setup-matt-pocock-skills` configured — the tickets are the same either way, only the shape of the blocking edges changes:
+`tasks.md` in the active change is the **source of truth** for what this change is made of, and it archives with the change. Write every approved ticket there as a checklist item, in dependency order (blockers first), numbered from `01`, each carrying its "Blocked by".
 
-- **Local files** → write one file per ticket under `.scratch/<feature-slug>/issues/<NN>-<slug>.md`, numbered from `01` in dependency order (blockers first). Each file's "Blocked by" lists the numbers/titles it depends on. Use the per-ticket file template below — one ticket per file, never a single combined file.
-- **A real issue tracker (GitHub, Linear, …)** → publish one issue per ticket in dependency order (blockers first) so each ticket's blocking edges can reference real identifiers. Use the platform's native blocking / sub-issue relationship where it has one; otherwise set each ticket's "Blocked by" to the blocking issues. Apply the `ready-for-agent` triage label unless instructed otherwise — the tickets are agent-grabbable by construction.
+If there is no active change — the work didn't come through `/to-spec` — skip to step 6 and treat the tracker as the source of truth instead.
+
+### 6. Publish one issue per ticket
+
+Cut each ticket from `tasks.md` into an issue on the tracker `/setup-matt-pocock-skills` configured. The tickets are the same either way; only the shape of the blocking edges changes:
+
+- **A real issue tracker (GitHub, GitLab, Linear, …)** → publish one issue per ticket in dependency order (blockers first) so each ticket's blocking edges can reference real identifiers. Use the platform's native blocking / sub-issue relationship where it has one; otherwise set each ticket's "Blocked by" to the blocking issues. Apply the `ready-for-agent` triage label unless instructed otherwise — the tickets are agent-grabbable by construction. **Write each issue's reference back into its `tasks.md` item**, so the two stay one-to-one.
+- **Local markdown** → stop at `tasks.md`. It is already a local markdown checklist; a second copy under `.scratch/` would be the duplication the source-of-truth rule exists to prevent. If there's no active change either, write one file per ticket under `.scratch/<feature-slug>/issues/<NN>-<slug>.md` using the template below — one ticket per file, never a single combined file.
+
+A box in `tasks.md` is ticked when its issue closes, not when its code is written. `/change-review` reconciles `tasks.md` against the tracker before it archives, so a box nobody remembered to tick is caught there rather than quietly dropping work out of the change.
 
 Work the **frontier**: any ticket whose blockers are all done. For a purely linear chain that means top to bottom.
 
