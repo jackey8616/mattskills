@@ -2,7 +2,7 @@
 
 `grill-with-docs` interviews you about a plan or design until you and the [agent](https://www.aihero.dev/ai-coding-dictionary/agent) share one understanding of it, and writes the vocabulary and the hard decisions into your repo while it does. It is the same interview [grill-me](https://aihero.dev/skills-grill-me) runs — a round of questions, then wait, then the next round — pointed at a codebase.
 
-It is **[stateful](https://www.aihero.dev/ai-coding-dictionary/stateful)**. Every other grilling skill leaves the [session](https://www.aihero.dev/ai-coding-dictionary/session) in your head; this one leaves files on disk. A term gets resolved and it lands in `CONTEXT.md` the moment it resolves, not batched at the end. A decision passes three gates and it lands as an ADR. That is the whole difference, and it is also the source of most of the trouble people have with the skill: the artifacts are real files in a real repo, so they can be absent when you expected them, and they can drift when more than one person is writing them.
+It is **[stateful](https://www.aihero.dev/ai-coding-dictionary/stateful)**. Every other grilling skill leaves the [session](https://www.aihero.dev/ai-coding-dictionary/session) in your head; this one leaves files on disk. A term gets resolved and it lands in `CONTEXT.md` the moment it resolves, not batched at the end. A decision passes three gates and it lands as an ADR. And when the interview is over, the agreement itself lands as the change's proposal, so nothing load-bearing is left behind in the conversation. That is the whole difference, and it is also the source of most of the trouble people have with the skill: the artifacts are real files in a real repo, so they can be absent when you expected them, and they can drift when more than one person is writing them.
 
 ## When to reach for it
 
@@ -24,19 +24,26 @@ The wayfinder split comes down to session count: `/grill-with-docs` for single-s
 
 The skill writes into your repo, so you need to be somewhere it is safe to write. Resolved terms go to a `CONTEXT.md` glossary at the root — or to the relevant context's `CONTEXT.md`, if a `CONTEXT-MAP.md` at the root marks the repo as multi-context. Decisions go to `docs/adr/`. Both are created lazily; nothing exists until the first term or decision crystallises, so there is nothing to scaffold up front.
 
-It also needs two other skills present, because its own `SKILL.md` is one line that delegates to them: [grilling](https://aihero.dev/skills-grilling) supplies the interview, [domain-modeling](https://aihero.dev/skills-domain-modeling) supplies the writing. Installing `grill-with-docs` alone gets you a skill that does not work.
+An initialized `openspec/` is wanted but not required. With one, the session closes by scaffolding the change and writing its proposal. Without one it says so and stops at the shared understanding, which is exactly where this skill used to stop — the interview is unaffected either way.
+
+It also needs two other skills present, because it delegates the work: [grilling](https://aihero.dev/skills-grilling) supplies the interview, [domain-modeling](https://aihero.dev/skills-domain-modeling) supplies the writing. Installing `grill-with-docs` alone gets you a skill that does not work.
 
 ## The paper trail
 
-Three things come out of a session, and they are not equal.
+Four things come out of a session, and they are not equal.
 
 | What resolved | Where it lands |
 | --- | --- |
 | A term — the project's own word for a thing | `CONTEXT.md`, inline, the moment it resolves |
 | A decision that is hard to reverse, surprising without context, and a real trade-off | An ADR under `docs/adr/` |
-| Everything else you decided | The conversation, and nowhere else |
+| The agreement itself — the problem, the solution in your words, what's out of scope | The change's `proposal.md`, written at the close |
+| The trade-offs you argued through and the alternatives you rejected | The change's `design.md`, which archives with the change |
 
-That third row is the one that catches people out. `CONTEXT.md` is a glossary and is deliberately kept as one — no implementation details, no [spec](https://www.aihero.dev/ai-coding-dictionary/spec), no scratch notes. ADRs are gated on all three conditions at once, so most decisions do not qualify and most sessions produce none. A session that yields a sharper glossary and zero ADRs is working as designed, but it means the bulk of what you agreed exists only in the [context window](https://www.aihero.dev/ai-coding-dictionary/context-window) you agreed it in. Hand that same conversation to [to-spec](https://aihero.dev/skills-to-spec) rather than [clearing](https://www.aihero.dev/ai-coding-dictionary/clearing) it.
+`CONTEXT.md` is a glossary and is deliberately kept as one — no implementation details, no [spec](https://www.aihero.dev/ai-coding-dictionary/spec), no scratch notes. ADRs are gated on all three conditions at once, so most decisions do not qualify and most sessions produce none. A session that yields a sharper glossary and zero ADRs is working as designed.
+
+The bottom two rows are written **at the close, not as you go**. Writing the agreement down mid-interview anchors the rounds you have not run yet: the draft becomes something to defend, and the questions bend towards it. So the interview finishes first, and only then does anything get committed to the change.
+
+One thing deliberately does not land here: **behaviour**. "The system does X when Y" is not a term, a decision or an agreement — it is a requirement, and it belongs in the delta specs that [to-spec](https://aihero.dev/skills-to-spec) writes. An ADR that has absorbed a requirement is read as a decision forever, and cannot be edited to fix it.
 
 The glossary is the point. Domain language is the thing this skill is actually building — the project's own words, agreed once, so you, the agent and your colleagues stop paying to re-derive them. It is worth saying that not everyone agrees this buys you agent performance: the sharpest public pushback is that a term and its plain-English expansion get the same result from the [model](https://www.aihero.dev/ai-coding-dictionary/model), and that the vocabulary really compresses communication between the humans who share it. That reading still leaves the glossary valuable; it just moves the value.
 
@@ -55,16 +62,18 @@ Scope decides it. Use this for anything you can settle in one session; use [wayf
 Two known causes. The mundane one: nothing qualified. ADRs need all three gates, and a session about a change with no new vocabulary genuinely has nothing to write. The real bug: when the skill runs inside another orchestration layer — a spec-driven-development wrapper, a multi-agent framework, a rule that invokes it as a step in someone else's pipeline — the file-writing half is reported to silently not happen, while the interview still runs. This is filed and unfixed. If you are in that setup, check the working directory before you trust the session's output.
 
 **It asked everything at once, with no recommendations, and never mentioned `CONTEXT.md`.**
-That is the skill failing to load its two dependencies. Because `SKILL.md` is a one-line delegation, an agent that does not pick up [grilling](https://aihero.dev/skills-grilling) and [domain-modeling](https://aihero.dev/skills-domain-modeling) guesses at what grilling means, and you get an undifferentiated question dump. Partial loading is the more confusing case — `grilling` loads, `domain-modeling` does not, and you get a good interview with no paper trail. It correlates with model and [effort](https://www.aihero.dev/ai-coding-dictionary/effort) level, and it is the most reported problem with this skill. If you suspect it, ask the agent directly which skills it loaded.
+That is the skill failing to load its dependencies. An agent that does not pick up [grilling](https://aihero.dev/skills-grilling) and [domain-modeling](https://aihero.dev/skills-domain-modeling) guesses at what grilling means, and you get an undifferentiated question dump. Partial loading is the more confusing case — `grilling` loads, `domain-modeling` does not, and you get a good interview with no paper trail. It correlates with model and [effort](https://www.aihero.dev/ai-coding-dictionary/effort) level, and it is the most reported problem with this skill.
+
+Two things reduce it now. `SKILL.md` opens with an explicit check that both loaded, and it repeats the routing rules itself rather than only pointing at `domain-modeling` — so a session that loses that dependency still knows a requirement must not go into an ADR. Neither is a guarantee, because a check has to be read to run. If you suspect it, ask the agent directly which skills it loaded.
 
 **Where did all my other decisions go?**
-Into the conversation only. This is the most substantive open complaint about the skill: the glossary is not a spec, most answers do not earn an ADR, and there is no ledger tying each resolved answer through to a spec, a ticket and a test. Precise answers — ordering guarantees, negative requirements, numeric defaults — get softened into weaker prose downstream, and the result can look complete while missing the thing you actually decided. The mitigation available today is to keep the session and feed it straight to [to-spec](https://aihero.dev/skills-to-spec), and to re-read the spec against your own answers rather than assuming it captured them.
+Into the change: the agreement into `proposal.md`, the trade-offs and rejected alternatives into `design.md`. This used to be the most substantive open complaint about the skill — the glossary is not a spec, most answers do not earn an ADR, and everything else lived only in the [context window](https://www.aihero.dev/ai-coding-dictionary/context-window) you agreed it in. The remaining half of that complaint still stands: there is no ledger tying each resolved answer through to a requirement, a ticket and a test, so precise answers (ordering guarantees, negative requirements, numeric defaults) can still soften into weaker prose downstream. Re-read the delta specs against your own answers rather than assuming they were carried over.
 
 **Can I point it at an existing repo that has no docs at all?**
 Yes. This is the right skill for a codebase with no ADRs, no domain language and no design principles — invoke it and say "help me document my repo". The community pattern pairs it with [improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture) for building or repairing a `CONTEXT.md`. Expect to steer it: it will read code and ask you about what it finds, and you are the one who says which of the words already in the codebase are the right ones.
 
 **What should I do when the session ends?**
-The skill's closing message tends to be open-ended, which is a known rough edge. In the main flow the answer is [to-spec](https://aihero.dev/skills-to-spec), in the same conversation. If the change is small enough to build immediately, go straight to [implement](https://aihero.dev/skills-implement) instead.
+In the main flow the answer is [to-spec](https://aihero.dev/skills-to-spec) — and because the proposal is now a file, you can [clear](https://www.aihero.dev/ai-coding-dictionary/clearing) between the two rather than carrying the whole interview forward. If the change is small enough to build immediately, go straight to [implement](https://aihero.dev/skills-implement) instead. The closing message itself tends to be open-ended, which is a known rough edge.
 
 **Why is it called that?**
 Nobody is happy with the name. There is an open suggestion to rename it `grill-domain-model`, which describes the behaviour more honestly. Nothing has moved on it. If a rename ever lands, the docs page moves with it and the URL changes.
@@ -76,13 +85,14 @@ Nobody is happy with the name. There is an open suggestion to rename it `grill-d
 - Questions the codebase can answer get answered by reading the codebase, not asked of you.
 - You get few or no ADRs, and the ones you get are decisions you would be annoyed to have to re-litigate.
 - It challenges a word you used because your existing glossary defines it differently.
+- Nothing is written to the change until the questions run out — and then the proposal appears in one piece.
 
 ## Where it fits
 
 `grill-with-docs` is the head of the main build chain:
 
 ```txt
-grill-with-docs → to-spec → to-tickets → implement → code-review
+grill-with-docs → to-spec → to-tickets → implement → code-review → change-review
 ```
 
-It comes before anything is written down as a spec — it produces the shared understanding and settled vocabulary that [to-spec](https://aihero.dev/skills-to-spec) then synthesises without interviewing you again. Its close neighbours are [grill-me](https://aihero.dev/skills-grill-me), the same interview with no repo and no files, and [domain-modeling](https://aihero.dev/skills-domain-modeling), the glossary-and-ADR discipline it drives; both sit on the [grilling](https://aihero.dev/skills-grilling) primitive. Upstream of it, [wayfinder](https://aihero.dev/skills-wayfinder) charts efforts too large for one session and can hand parts of the map back down to it. When you're unsure which skill or flow fits, [ask-matt](https://aihero.dev/skills-ask-matt) routes you.
+It comes before anything is written down as a spec — it produces the shared understanding and settled vocabulary, and hands them over as the proposal that [to-spec](https://aihero.dev/skills-to-spec) turns into delta specs without interviewing you again. Its close neighbours are [grill-me](https://aihero.dev/skills-grill-me), the same interview with no repo and no files, and [domain-modeling](https://aihero.dev/skills-domain-modeling), the glossary-and-ADR discipline it drives; both sit on the [grilling](https://aihero.dev/skills-grilling) primitive. Upstream of it, [wayfinder](https://aihero.dev/skills-wayfinder) charts efforts too large for one session and can hand parts of the map back down to it. When you're unsure which skill or flow fits, [ask-matt](https://aihero.dev/skills-ask-matt) routes you.

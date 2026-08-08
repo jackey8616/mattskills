@@ -28,6 +28,20 @@ None up front. The skill writes into two places and creates both lazily:
 
 Nothing needs to exist before you start, and nothing is created speculatively.
 
+## It owns two layers of three
+
+There are three places project documentation can live, and each has exactly one owner. This skill owns two of them:
+
+| Layer | Path | Owner | Lifetime |
+| --- | --- | --- | --- |
+| Behaviour — what the system does today | `openspec/specs/` | OpenSpec, updated when a change archives | Rewritten continuously |
+| Decisions — why we chose what we chose | `docs/adr/` | this skill | Frozen once accepted |
+| Language — the project's own words | `CONTEXT.md` | this skill | Living |
+
+The first row is the one that makes the other two work. Because behaviour has its own home, an ADR never has to be edited to stay accurate and `CONTEXT.md` never has to describe how anything is built. Before this split, keeping ADRs "current" meant rewriting them, which destroyed the reason to keep them.
+
+So the routing rule the skill applies as you talk: *"the system does X when Y"* is a requirement and goes to the change's delta specs — never into an ADR, never into the glossary.
+
 ## Two artifacts, two bars
 
 The glossary and the ADR are held to different standards, and conflating them is where most of the trouble in this skill comes from.
@@ -42,6 +56,16 @@ The glossary and the ADR are held to different standards, and conflating them is
 Miss any one of the ADR's three tests and there is no ADR. An easily-reversed decision will just get reversed; an unsurprising one is nobody's question; one with no real alternative records that you did the obvious thing.
 
 The `CONTEXT.md` rule is the one to actually hold onto, because it is the one that breaks in the field. **It is a glossary and nothing else.** Left unchecked, models treat "write to `CONTEXT.md`" as permission to persist every answer you give, and the file turns into a running spec — this is the most-reported problem with the skill, across several models.
+
+## An accepted ADR is frozen
+
+Once an ADR is accepted, the skill will only ever do two things to `docs/adr/`: create a new file, or change an existing file's frontmatter. It will not edit a title, a context line, or a decision — not to correct it, not to bring it in line with how the code works now.
+
+Reversing a decision means writing a **new** ADR and marking the old one, which is what the numbering is for. ADRs are written as numbered **decision points**, 1-3 sentences each, so a later ADR can retire one part of an older one — `superseded: [{point: 3, by: ADR-0007}]` in frontmatter — while the rest still stands. Whole-document retirement uses `status` instead. Point numbers are never reused, or the references stop meaning anything.
+
+The thing this protects is the only thing an ADR is for. It records what you believed, and why, at the moment you decided — and a reader a year later has to be able to tell sound reasoning at the time from reasoning quietly retrofitted since. A superseded point that reads as wrong today is doing its job.
+
+The corollary catches people out: **behaviour drifting away from what an ADR describes is not the ADR going stale.** `openspec/specs/` says what the system does; the ADR says what was decided. Only a decision genuinely reversed earns a new ADR. ADRs written before this format are prose with no points to address, so they can only be superseded whole — adding the numbers would itself be the edit the freeze forbids.
 
 ## Cross-referencing, and where it stops
 
