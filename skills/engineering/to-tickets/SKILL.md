@@ -126,9 +126,9 @@ Avoid specific file paths or code snippets — they go stale fast. Exception: if
 
 ## Working the tickets
 
-Work the **frontier**: any ticket whose blockers are all done. For a purely linear chain that means top to bottom. Each ticket gets its **own fresh session** — `/implement` builds it and closes out with `/code-review`, then it merges.
+Work the **frontier**: any ticket whose blockers are all done. For a purely linear chain that means top to bottom. Each ticket gets its **own fresh session** — `/implement` builds it, closes out with `/code-review`, and commits the ticket's tick in `tasks.md` alongside the work. Then it merges.
 
-**When a ticket's PR merges, tick its box in `tasks.md`** and close its issue if it has one. The tick is what `/change-review` reads to decide the change is ready to archive; an issue closed without the tick leaves the change looking unfinished.
+**The merge is what closes a ticket out**: the tick lands in `tasks.md` and the `Closes #` trailer closes the issue, both at the moment the code ships. Until then the issue stays open, because nothing has shipped. After each merge, confirm the box really is ticked — `/change-review` reads those boxes to decide the change is ready to archive, so a tick that never landed stalls the change with all its work already shipped.
 
 Once every box is ticked, run `/change-review` — the gate before archiving the change.
 
