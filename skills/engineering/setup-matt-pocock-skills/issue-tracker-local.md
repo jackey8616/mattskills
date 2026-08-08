@@ -1,12 +1,13 @@
 # Issue tracker: Local Markdown
 
-Issues and specs for this repo live as markdown files in `.scratch/`.
+Issues for this repo live as markdown files in `.scratch/`.
+
+Specs do **not**. Proposals, delta specs and task lists live in `openspec/changes/<change-id>/`, and current behaviour lives in `openspec/specs/`. `.scratch/` holds incoming requests, work that outlives a change, and wayfinder maps.
 
 ## Conventions
 
 - One feature per directory: `.scratch/<feature-slug>/`
-- The spec is `.scratch/<feature-slug>/spec.md`
-- Implementation issues are one file per ticket at `.scratch/<feature-slug>/issues/<NN>-<slug>.md`, numbered from `01` — never a single combined tickets file
+- Implementation issues are one file per ticket at `.scratch/<feature-slug>/issues/<NN>-<slug>.md`, numbered from `01` — never a single combined tickets file. When the work belongs to an OpenSpec change, its `tasks.md` is the checklist and no per-ticket file is written; a second copy here would be duplication.
 - Triage state is recorded as a `Status:` line near the top of each issue file (see `triage-labels.md` for the role strings)
 - Comments and conversation history append to the bottom of the file under a `## Comments` heading
 

@@ -11,6 +11,7 @@ Scaffold the per-repo configuration that the engineering skills assume:
 - **Issue tracker** — where issues live (GitHub by default; local markdown is also supported out of the box)
 - **Triage labels** — the strings used for the five canonical triage roles
 - **Domain docs** — where `CONTEXT.md` and ADRs live, and the consumer rules for reading them
+- **Spec layer** — whether `openspec/` is initialized, and whether this repo's existing behaviour has been written into it
 
 This is a prompt-driven skill, not a deterministic script. Explore, present what you found, confirm with the user, then write.
 
@@ -24,6 +25,7 @@ Look at the current repo to understand its starting state. Read whatever exists;
 - `AGENTS.md` and `CLAUDE.md` at the repo root — does either exist? Is there already an `## Agent skills` section in either?
 - `CONTEXT.md` and `CONTEXT-MAP.md` at the repo root
 - `docs/adr/` and any `src/*/docs/adr/` directories
+- `openspec/` — is the spec layer initialized? If it is, is `openspec/specs/` populated or still empty?
 - `docs/agents/` — does this skill's prior output already exist?
 - `.scratch/` — sign that a local-markdown issue tracker convention is already in use
 - Is the `triage` skill installed? (a `triage` skill folder alongside this one, or `triage` in your available skills.) This decides whether Section B runs at all.
@@ -59,6 +61,24 @@ The defaults are the five canonical roles, each label string equal to its name: 
 **Section C — Domain docs.** Default to **single-context** — one `CONTEXT.md` + `docs/adr/` at the repo root. This fits almost every repo; write it without asking.
 
 Offer **multi-context** — a root `CONTEXT-MAP.md` pointing to per-context `CONTEXT.md` files — only when exploration found monorepo signals. Then confirm which layout they want.
+
+**Section D — Spec layer.**
+
+> Explainer: `openspec/specs/` is where **current behaviour** lives — what the system does today. Having a home for it is what stops that information accumulating in ADRs, which are frozen once accepted and so can never be edited to stay accurate. `/to-spec` writes changes against it, and `/change-review` archives them into it.
+
+Skip the first question when exploration already found `openspec/`. Otherwise ask:
+
+> Initialize OpenSpec for this repo? (recommended: **yes**) — `npx @fission-ai/openspec@latest init`
+
+The CLI is the scoped `@fission-ai/openspec` package; the bare `openspec` name on npm is an unrelated `0.0.0` placeholder that installs no working binary. On **no**, say plainly that `/to-spec` will stop until it's there, and move on — don't design a workaround.
+
+Then, whether it was already present or you just initialized it, ask the second question — but only when `openspec/specs/` is empty and the repo has code in it:
+
+> Write the current behaviour of this repo's existing modules into `openspec/specs/` now? (recommended: **yes** for an existing codebase, **no** for a greenfield one)
+
+`openspec/specs/` otherwise only grows as changes archive, so an existing repo starts with an empty behaviour layer and stays that way for months. During that time anyone asking what the system does is back to reading ADRs end to end, which is the problem the layer exists to solve.
+
+**Seeding is a one-time action and belongs here, not in the change flow.** Folding it into a change would put "describe what already existed" inside the scope of work proposed for something else. Survey the existing modules, write one capability spec per coherent area, and describe only what the code does **today** — not what it should do, and not what a change is about to make it do.
 
 ### 3. Confirm and edit
 
@@ -97,7 +117,13 @@ The block:
 ### Domain docs
 
 [one-line summary of layout — "single-context" or "multi-context"]. See `docs/agents/domain.md`.
+
+### Spec layer
+
+[one-line summary — "OpenSpec initialized, current behaviour seeded", "initialized, specs grow as changes archive", or "not initialized"]. Current behaviour lives in `openspec/specs/`; see `docs/agents/domain.md` for which document owns what.
 ```
+
+Omit the `### Spec layer` sub-block only when the user declined to initialize OpenSpec.
 
 Include the `### Triage labels` sub-block, and write `docs/agents/triage-labels.md`, only when `triage` is installed and Section B ran. When it isn't, both are omitted.
 
