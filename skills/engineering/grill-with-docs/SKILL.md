@@ -31,17 +31,15 @@ The rules below have to hold whether or not `domain-modeling` arrived. They cond
 - **A new ADR**, when the decision is **hard to reverse**, **surprising without context**, *and* **the result of a real trade-off**. All three, or no ADR. Write it as numbered decision points, 1-3 sentences each; most have exactly one. Declining is the normal outcome — most sessions write none, and you don't mention the one you decided against.
 - **An existing ADR's frontmatter** — `superseded` for a single decision point, `status` for the whole document.
 
-That is the whole set. You may **never** edit the title, the context line, or any decision point of an accepted ADR. If the grilling reverses a past decision, write a new ADR and mark the old one's frontmatter — the old reasoning is the record of what we believed at the time, and rewriting it destroys the thing the ADR exists for. Behaviour drifting away from what an ADR describes is not a reversal; that's a spec update.
+That is the whole set of doc-layer writes. You may **never** edit the title, the context line, or any decision point of an accepted ADR. If the grilling reverses a past decision, write a new ADR and mark the old one's frontmatter — the old reasoning is the record of what we believed at the time, and rewriting it destroys the thing the ADR exists for. Behaviour drifting away from what an ADR describes is not a reversal; that's a spec update.
 
 ## Closing the session
 
-The interview is finished when the frontier is empty. Then, and not before — writing any of this earlier anchors the rounds you haven't run yet:
+The interview is finished when the frontier is empty. Then, and not before — writing any of this earlier anchors the rounds you haven't run yet.
 
-1. **Scaffold the change.** Prefer the repo's own OpenSpec proposal command where one exists; otherwise follow the agent instructions `openspec init` generated. The toolchain owns the folder format, not this skill.
-2. **Write the Proposal** (`proposal.md`) — the problem, the solution in the user's own words, and what is explicitly out of scope. Not requirements, not scenarios: those are the delta, and `/to-spec` writes them.
-3. **Write the trade-offs into `design.md`** — what was rejected, and why. `/to-spec` appends the technical half later (the seams, the testing approach), so leave the file open rather than closing it off.
+**Invoke `/writing-proposals`** with what the interview settled. It opens the change and writes the Proposal and the trade-offs half of `design.md`; where the repo has no `openspec/` it says so and stops, which leaves the shared understanding in the conversation where it lived before this step existed.
 
-If the repo has no `openspec/`, say so and stop at the shared understanding. It stays in the conversation, which is where it lived before this step existed. Don't invent another home for it, and don't push it into `CONTEXT.md` or an ADR to compensate.
+Hand it the *material*, not the transcript: what was agreed, in the user's own words; what was rejected, and why; what you ruled out of scope. Requirements and scenarios are not yours to pass on — those are the delta, and `/to-spec` writes them.
 
 ## Where the output goes
 

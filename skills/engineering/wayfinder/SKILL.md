@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 A loose idea has arrived — too big for one agent session, and wrapped in fog: the way from here to the **destination** isn't visible yet. Wayfinding is about finding that way, not charging at the destination. This skill charts the way as a **shared map** on the repo's issue tracker, then works its **decision tickets** — questions whose resolution is a decision, not slices of a build to execute — one at a time until the route is clear.
 
-The destination varies per effort, and naming it is the first act of charting — it shapes every ticket. It might be a spec to hand off and iterate on, a decision to lock before planning starts, or a change made in place like a data-structure migration. The map is domain-agnostic — engineering work, course content, whatever fits the shape.
+The destination varies per effort, and naming it is the first act of charting — it shapes every ticket. It might be a plan complete enough for someone else to build from, a direction locked down before planning starts, or a migration carried out in place on a live data structure. The map is domain-agnostic — engineering work, course content, whatever fits the shape.
 
 ## Plan, don't do
 
@@ -31,7 +31,7 @@ The whole map at low resolution, loaded once per session. Open tickets are **not
 ```markdown
 ## Destination
 
-<what reaching the end of this map looks like — the spec, decision, or change this effort is finding its way to. One or two lines; every session orients to it before choosing a ticket.>
+<what reaching the end of this map looks like — what this effort is finding its way to. One or two lines; every session orients to it before choosing a ticket.>
 
 ## Notes
 
@@ -79,6 +79,25 @@ Every ticket is either **HITL** — human in the loop, worked _with_ a human who
 - **Grilling** (HITL): Conversation. The default case. Always invoke the /grilling and /domain-modeling skills.
 - **Task** (HITL or AFK): Manual work that must happen before a _decision_ can be made — nothing to decide, prototype, or research, but the discussion is blocked until it's done. Signing up for a service so its API can be judged, provisioning access, moving data so its shape can be seen. This is the one type that _does_ rather than decides — and it earns its place by unblocking a decision, not by delivering the destination. The agent drives it alone where it can (AFK); otherwise it hands the human a precise checklist (HITL). Resolved when the work is done; the answer records what was done and any resulting facts (credentials location, new URLs, row counts) later tickets depend on.
 
+## What a resolution writes
+
+A resolution lands in its ticket and gets gisted onto the map. But an answer that settled a *word*, or a decision the repo will live with, belongs to the repo's documents too — the map is an index, not a place those live.
+
+Write these **as each ticket resolves**, never batched to the end. Batching forces the closing session to re-read every closed ticket, which is the context blow-up the map exists to prevent.
+
+| The sentence you're writing                                          | Where it goes                                                    |
+| -------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| "In this project, the word *X* means…"                                | `CONTEXT.md`, immediately                                         |
+| "We chose A over B, and undoing it would be expensive"                | A new ADR — only if it clears the gate below                      |
+| "We chose A over B, for reasons that stop mattering once this ships"  | The ticket's resolution comment; it reaches `design.md` at the close |
+| "The system does X when Y"                                            | **Not here.** That's the spec layer; `/to-spec` writes it, after the map hands off |
+
+**A new ADR** only when the decision is **hard to reverse**, **surprising without context**, *and* **the result of a real trade-off**. All three, or no ADR — declining is the normal outcome, and you don't mention the one you decided against. Where one is written, the map's Decisions-so-far line links to it, so the index shows which resolutions were promoted.
+
+**By ticket type**, `CONTEXT.md` is open to all four — any ticket can pin a word down. The ADR gate applies to **grilling** and **prototype** only. `research` produces facts and `task` produces state; neither is a decision, and letting them open ADRs invites "I found out X, so here's an ADR" — the requirement-as-decision confusion the layers exist to stop.
+
+This condenses `/domain-modeling`'s own routing rule, and these rules hold whether or not it loaded. Invoke it anyway: it is the active discipline, and it owns the rule.
+
 ## Fog of war
 
 The map is _deliberately_ incomplete: don't chart what you can't yet see. Beyond the live tickets lies the **fog of war** — the dim view of decisions and investigations you can tell are coming but can't yet pin down, because they hang on questions still open. Resolving a ticket clears the fog ahead of it, graduating whatever's now specifiable into fresh tickets — one at a time, until the way to the destination is clear and no tickets remain.
@@ -102,13 +121,13 @@ Ruling something out of scope is a scoping act, not a step on the route. When a 
 
 ## Invocation
 
-Two modes. Either way, **never resolve more than one ticket per session** — with the exception of research tickets.
+Three modes. In the two that work tickets, **never resolve more than one ticket per session** — with the exception of research tickets.
 
 ### Chart the map
 
 User invokes with a loose idea.
 
-1. **Name the destination.** Run a `/grilling` and `/domain-modeling` session to pin down what this map is finding its way to — the spec, decision, or change. The destination fixes the scope, so it's settled first.
+1. **Name the destination.** Run a `/grilling` and `/domain-modeling` session to pin down what this map is finding its way to. The destination fixes the scope, so it's settled first.
 2. **Map the frontier.** Grill again, **breadth-first** this time: fan out across the whole space rather than deep on any one thread, surfacing the open decisions and the first steps takeable now. **If this surfaces no fog** — the way to the destination is already clear, the whole journey small enough for one session — you don't need a map. Stop and ask the user how they'd like to proceed.
 3. **Create the map** (label `wayfinder:map`): Destination and Notes filled in, Decisions-so-far empty, the fog sketched into **Not yet specified**.
 4. **Create the tickets you can specify now** as child issues of the map — then wire blocking edges in a **second pass** (issues need ids before they can reference each other). Wiring sorts them into the frontier and the blocked; everything you can't yet specify stays in the fog — the **Not yet specified** section.
@@ -122,7 +141,20 @@ User invokes with a map (URL or number). A ticket is **optional** — without on
 1. Load the **map** — the low-res view, not every ticket body.
 2. Choose the ticket. If the user named one, use it. Otherwise take the first frontier ticket in order. **Claim it**: assign it to yourself before any work.
 3. Resolve it — **zoom as needed**: fetch the full body of any related or closed ticket on demand; invoke the skills the `## Notes` block names. If in doubt, use `/grilling` and `/domain-modeling`.
-4. Record the resolution: post the answer as a **resolution comment**, **close** the issue, and **append a context pointer** to the map's Decisions-so-far.
+4. Record the resolution: post the answer as a **resolution comment**, **close** the issue, and **append a context pointer** to the map's Decisions-so-far. Write whatever the answer settled into the repo's documents — see [What a resolution writes](#what-a-resolution-writes) — and link any ADR it produced from both the ticket and its map line.
 5. Add newly-surfaced tickets (create-then-wire); graduate any fog the answer has made specifiable, clearing each graduated patch from **Not yet specified** so it lives only as its new ticket. If the answer reveals a ticket — this one or another — sits beyond the destination, **rule it out of scope** rather than resolving it on the route. If the decision invalidates other parts of the map, update or delete those tickets.
 
 The user may run unblocked tickets in parallel, so expect other sessions to be editing the tracker concurrently.
+
+### Close the map
+
+The map is finished when no tickets remain. Closing is **its own session**: it reads the whole map and every closed ticket, which is a different shape of context from resolving one question, and it is the one session that writes the plan out rather than adding to it.
+
+1. **Check the way is really clear.** No open tickets, and **Not yet specified** empty. Fog that survived means a ticket is missing, not that the map is done — graduate it and keep working rather than closing over it.
+2. **Collect from the closed tickets**: what was agreed, in the user's own words; what was rejected and why, from the resolution comments; and the **Out of scope** section as it stands. That last one exists nowhere else, and it is the expensive half — it records thinking that happened, so nobody re-opens it in a month.
+3. **Invoke `/writing-proposals`** with that material. It opens the change and writes the Proposal and the trade-offs half of `design.md`. The map's **Out of scope** becomes the Proposal's out-of-scope section; the rejections become `design.md`.
+4. **Close the map**: post a final comment linking the change, then close it the way the tracker doc's "Wayfinding operations" section says. A closed map is unambiguously finished, the same way a closed ticket is unambiguously off the frontier.
+
+If the repo has no `openspec/`, `/writing-proposals` says so and stops. That is the correct outcome, not a failure — the map and its tickets are the record, as they were before this step existed. Don't invent another home for the proposal.
+
+Then hand off: `/to-spec` picks the work up from the Proposal, and it does not interview anyone again.

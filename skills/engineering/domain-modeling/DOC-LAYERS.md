@@ -29,6 +29,8 @@ Three rules follow from that table.
 
 **`CONTEXT.md` is a glossary.** Not a spec, not a scratch pad, not a decision log.
 
+A `wayfinder` map is **an index, not a fourth layer**: its Decisions-so-far gists what each closed ticket holds and links to it, and a resolution clearing the ADR gate is written to `docs/adr/` and linked from the map rather than left to live in the tracker.
+
 ## Drift is not staleness
 
 When the system's behaviour moves away from what an ADR describes, **the ADR is not out of date**. `openspec/specs/` is the record of what the system does; the ADR is the record of a decision that was taken. Only a decision that has genuinely been reversed needs a new one — and reversing it means writing a new ADR, never editing the old.

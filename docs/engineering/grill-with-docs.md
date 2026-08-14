@@ -24,7 +24,7 @@ The wayfinder split comes down to session count: `/grill-with-docs` for single-s
 
 The skill writes into your repo, so you need to be somewhere it is safe to write. Resolved terms go to a `CONTEXT.md` glossary at the root — or to the relevant context's `CONTEXT.md`, if a `CONTEXT-MAP.md` at the root marks the repo as multi-context. Decisions go to `docs/adr/`. Both are created lazily; nothing exists until the first term or decision crystallises, so there is nothing to scaffold up front.
 
-An initialized `openspec/` is wanted but not required. With one, the session closes by scaffolding the change and writing its proposal. Without one it says so and stops at the shared understanding, which is exactly where this skill used to stop — the interview is unaffected either way.
+An initialized `openspec/` is wanted but not required. With one, the session closes by handing what it settled to [writing-proposals](https://aihero.dev/skills-writing-proposals), which opens the change and writes its proposal. Without one that closer says so and stops at the shared understanding, which is exactly where this skill used to stop — the interview is unaffected either way.
 
 It also needs two other skills present, because it delegates the work: [grilling](https://aihero.dev/skills-grilling) supplies the interview, [domain-modeling](https://aihero.dev/skills-domain-modeling) supplies the writing. Installing `grill-with-docs` alone gets you a skill that does not work.
 
@@ -92,7 +92,7 @@ Nobody is happy with the name. There is an open suggestion to rename it `grill-d
 `grill-with-docs` is the head of the main build chain:
 
 ```txt
-grill-with-docs → to-spec → to-tickets → implement → code-review → change-review
+grill-with-docs → writing-proposals → to-spec → to-tickets → implement → code-review → change-review
 ```
 
-It comes before anything is written down as a spec — it produces the shared understanding and settled vocabulary, and hands them over as the proposal that [to-spec](https://aihero.dev/skills-to-spec) turns into delta specs without interviewing you again. Its close neighbours are [grill-me](https://aihero.dev/skills-grill-me), the same interview with no repo and no files, and [domain-modeling](https://aihero.dev/skills-domain-modeling), the glossary-and-ADR discipline it drives; both sit on the [grilling](https://aihero.dev/skills-grilling) primitive. Upstream of it, [wayfinder](https://aihero.dev/skills-wayfinder) charts efforts too large for one session and can hand parts of the map back down to it. When you're unsure which skill or flow fits, [ask-matt](https://aihero.dev/skills-ask-matt) routes you.
+It comes before anything is written down as a spec — it produces the shared understanding and settled vocabulary, then hands them to [writing-proposals](https://aihero.dev/skills-writing-proposals), which turns them into the proposal that [to-spec](https://aihero.dev/skills-to-spec) reads without interviewing you again. Its close neighbours are [grill-me](https://aihero.dev/skills-grill-me), the same interview with no repo and no files, and [domain-modeling](https://aihero.dev/skills-domain-modeling), the glossary-and-ADR discipline it drives; both sit on the [grilling](https://aihero.dev/skills-grilling) primitive. Upstream of it, [wayfinder](https://aihero.dev/skills-wayfinder) charts efforts too large for one session and can hand parts of the map back down to it. When you're unsure which skill or flow fits, [ask-matt](https://aihero.dev/skills-ask-matt) routes you.
